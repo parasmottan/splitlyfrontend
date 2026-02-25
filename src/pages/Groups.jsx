@@ -6,6 +6,7 @@ import useAuthStore from '../stores/authStore';
 import Avatar from '../components/Avatar';
 import BottomNav from '../components/BottomNav';
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
 
 export default function Groups() {
   const navigate = useNavigate();
@@ -63,8 +64,21 @@ export default function Groups() {
         )}
 
         {/* Loading */}
-        {loading && groups.length === 0 && (
-          <div className="loading-center"><div className="spinner"></div></div>
+        {loading && activeGroups.length === 0 && (
+          <div style={{ marginTop: '12px' }}>
+            <h3 className="caption" style={{ marginBottom: '12px' }}>LOADING</h3>
+            {[1, 2, 3].map(i => (
+              <div key={i} className="card" style={{ marginBottom: '12px', padding: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Skeleton width="44px" height="44px" borderRadius="50%" />
+                  <div style={{ flex: 1 }}>
+                    <Skeleton width="60%" height="20px" style={{ marginBottom: '8px' }} />
+                    <Skeleton width="40%" height="13px" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* Empty State */}

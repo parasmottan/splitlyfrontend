@@ -3,6 +3,7 @@ import api from '../services/api';
 import useAuthStore from '../stores/authStore';
 import BottomNav from '../components/BottomNav';
 import Avatar from '../components/Avatar';
+import Skeleton from '../components/Skeleton';
 
 const CATEGORY_ICONS = {
   food: '🍽️',
@@ -44,7 +45,30 @@ export default function Activity() {
       </div>
 
       {loading && (
-        <div className="loading-center"><div className="spinner"></div></div>
+        <div style={{ marginTop: '12px' }}>
+          {[1, 2].map(i => (
+            <div key={i} style={{ marginBottom: '24px' }}>
+              <Skeleton width="80px" height="14px" style={{ marginBottom: '12px' }} />
+              {[1, 2, 3].map(j => (
+                <div key={j} className="card" style={{ marginBottom: '8px', padding: '14px 16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Skeleton width="40px" height="40px" borderRadius="10px" />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <Skeleton width="120px" height="16px" />
+                        <Skeleton width="60px" height="16px" />
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Skeleton width="80px" height="13px" />
+                        <Skeleton width="40px" height="12px" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       )}
 
       {!loading && dateKeys.length === 0 && (

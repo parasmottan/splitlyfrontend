@@ -12,12 +12,11 @@ export default function Header({ title, onBack }) {
   }, []);
 
   return (
-    <div style={{
+    <div className="glass-header" style={{
       padding: '16px 20px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      background: 'white',
       position: 'sticky',
       top: 0,
       zIndex: 100

@@ -6,6 +6,7 @@ import useSettlementStore from '../stores/settlementStore';
 import useGroupStore from '../stores/groupStore';
 import Avatar from '../components/Avatar';
 import Modal from '../components/Modal';
+import Skeleton from '../components/Skeleton';
 
 export default function Settlement() {
   const { id } = useParams();
@@ -44,7 +45,40 @@ export default function Settlement() {
   };
 
   if (loading && !settlementData) {
-    return <div className="page"><div className="loading-center"><div className="spinner"></div></div></div>;
+    return (
+      <div className="page page-white" style={{ padding: '0 20px' }}>
+        <div className="header">
+          <button className="header-back" onClick={() => navigate(-1)}>
+            <IoChevronBack /> Back
+          </button>
+          <span className="header-title">Settle Up</span>
+          <div style={{ width: '60px' }}></div>
+        </div>
+        <div style={{ textAlign: 'center', padding: '24px 0' }}>
+          <Skeleton width="80px" height="12px" style={{ margin: '0 auto 8px' }} />
+          <Skeleton width="140px" height="36px" style={{ margin: '0 auto 8px' }} />
+          <Skeleton width="100px" height="12px" style={{ margin: '0 auto' }} />
+        </div>
+        <Skeleton width="120px" height="14px" style={{ marginBottom: '16px' }} />
+        {[1, 2].map(i => (
+          <div key={i} className="card" style={{ marginBottom: '10px', padding: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Skeleton width="32px" height="32px" borderRadius="50%" />
+              <div style={{ textAlign: 'center' }}>
+                <Skeleton width="20px" height="10px" style={{ marginBottom: '4px' }} />
+                <Skeleton width="20px" height="20px" />
+              </div>
+              <Skeleton width="32px" height="32px" borderRadius="50%" />
+              <div style={{ flex: 1 }}>
+                <Skeleton width="60px" height="16px" style={{ marginBottom: '6px' }} />
+                <Skeleton width="80px" height="12px" />
+              </div>
+              <Skeleton width="70px" height="32px" borderRadius="var(--radius-full)" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   }
 
   const data = settlementData;

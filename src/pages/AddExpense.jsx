@@ -6,6 +6,7 @@ import useExpenseStore from '../stores/expenseStore';
 import useAuthStore from '../stores/authStore';
 import Avatar from '../components/Avatar';
 import Header from '../components/Header';
+import Skeleton from '../components/Skeleton';
 
 const CATEGORIES = [
   { key: 'food', label: 'Food & Dining', icon: '🍽️' },
@@ -86,7 +87,26 @@ export default function AddExpense() {
   };
 
   if (!activeGroup) {
-    return <div className="page"><div className="loading-center"><div className="spinner"></div></div></div>;
+    return (
+      <div className="page page-white">
+        <Header title="Add Expense" onBack={() => navigate(-1)} />
+        <div style={{ padding: '0 20px' }}>
+          <div style={{ textAlign: 'center', padding: '24px 0' }}>
+            <Skeleton width="60px" height="14px" style={{ margin: '0 auto 8px' }} />
+            <Skeleton width="120px" height="40px" style={{ margin: '0 auto' }} />
+          </div>
+          <div className="form-group">
+            <Skeleton width="100px" height="13px" style={{ marginBottom: '8px' }} />
+            <Skeleton height="48px" borderRadius="var(--radius-md)" />
+          </div>
+          <div className="card" style={{ marginBottom: '24px' }}>
+            <div className="form-row"><Skeleton width="100%" height="20px" /></div>
+            <div className="form-row"><Skeleton width="100%" height="20px" /></div>
+          </div>
+          <Skeleton height="56px" borderRadius="var(--radius-full)" />
+        </div>
+      </div>
+    );
   }
 
   const currSymbol = activeGroup.currencySymbol || '₹';
