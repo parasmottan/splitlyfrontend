@@ -259,7 +259,11 @@ export default function Groups() {
           <div style={{
             display: 'flex', alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: '20px',
+              marginBottom: '20px',
+              paddingTop: '15px', 
+              paddingRight: '3px',
+              paddingLeft: '3px',
+              // padding: '3px'
           }}>
             <h1 style={{
               fontSize: '34px', fontWeight: '700', color: '#1C1C1E',

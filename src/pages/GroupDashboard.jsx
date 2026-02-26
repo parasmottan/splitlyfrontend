@@ -165,6 +165,8 @@ export default function GroupDashboard() {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '8px 16px',
+        paddingTop: '10px',
+        paddingBottom: '8px',
         minHeight: '44px',
         background: '#F2F2F7',
         position: 'sticky',

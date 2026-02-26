@@ -70,7 +70,7 @@ export default function GroupSettings() {
   return (
     <div className="page page-white" style={{ padding: '0 20px' }}>
       {/* Header */}
-      <div className="header">
+      <div className="header" style={{ paddingTop: '10px', paddingBottom: '8px ' }}>
         <button className="header-back" onClick={() => navigate(-1)}>
           <IoChevronBack style={{ fontSize: '20px' }} /> Back
         </button>
