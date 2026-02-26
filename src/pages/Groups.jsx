@@ -1,82 +1,316 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState, memo, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoAdd, IoSearch, IoPeopleOutline, IoChevronForward } from 'react-icons/io5';
+import { IoSearch, IoClose, IoPeopleOutline } from 'react-icons/io5';
 import useGroupStore from '../stores/groupStore';
 import useAuthStore from '../stores/authStore';
 import Avatar from '../components/Avatar';
 import BottomNav from '../components/BottomNav';
-import Header from '../components/Header';
 import Skeleton from '../components/Skeleton';
 
+/* ────────────────────────────────────────────
+   Small stacked avatar row (overlapping circles)
+   ──────────────────────────────────────────── */
+const MemberAvatarStack = memo(function MemberAvatarStack({ members, max = 3 }) {
+  const shown = members?.slice(0, max) || [];
+  const extra = (members?.length || 0) - max;
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {shown.map((m, i) => (
+        <div
+          key={m.user?._id || i}
+          style={{
+            width: '28px', height: '28px', borderRadius: '50%',
+            border: '2px solid white',
+            marginLeft: i === 0 ? 0 : '-8px',
+            zIndex: max - i,
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <Avatar name={m.user?.name || '?'} style={{
+            width: '28px', height: '28px', fontSize: '11px',
+            minWidth: '28px', minHeight: '28px',
+          }} />
+        </div>
+      ))}
+      {extra > 0 && (
+        <div style={{
+          width: '28px', height: '28px', borderRadius: '50%',
+          border: '2px solid white', marginLeft: '-8px',
+          background: '#E5E5EA', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', fontSize: '11px', fontWeight: '600',
+          color: '#636366', position: 'relative', zIndex: 0,
+        }}>
+          +{extra}
+        </div>
+      )}
+    </div>
+  );
+});
+
+/* ────────────────────────────────────────────
+   Single group card – matches PNG exactly
+   ──────────────────────────────────────────── */
+const GroupCard = memo(function GroupCard({ group, onClick, currSymbol }) {
+  const youOwe = group.balance?.youOwe || 0;
+  const youAreOwed = group.balance?.youAreOwed || 0;
+  const isSettled = group.balance?.isSettled;
+  const isClean = !youOwe && !youAreOwed && !isSettled;
+  const lastExpense = group.lastExpense;
+
+  /* Subtext: "Last added by Name • time" */
+  let subtext = '';
+  if (lastExpense) {
+    const who = lastExpense.paidBy?.name?.split(' ')[0] || 'someone';
+    const when = lastExpense.timeAgo || '';
+    subtext = `Last added by ${who}${when ? ` • ${when}` : ''}`;
+  } else if (group.createdAt) {
+    subtext = `Created ${new Date(group.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}`;
+  }
+
+  /* Balance display */
+  let balanceLabel = '', balanceAmount = '', balanceColor = '#8E8E93';
+  if (youOwe > 0) {
+    balanceLabel = 'You owe';
+    balanceAmount = `${currSymbol}${youOwe.toLocaleString('en-IN')}`;
+    balanceColor = '#FF3B30';
+  } else if (youAreOwed > 0) {
+    balanceLabel = 'You are owed';
+    balanceAmount = `${currSymbol}${youAreOwed.toLocaleString('en-IN')}`;
+    balanceColor = '#34C759';
+  } else {
+    balanceLabel = 'No expenses';
+    balanceAmount = `${currSymbol}0`;
+    balanceColor = '#8E8E93';
+  }
+
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: '#FFFFFF',
+        borderRadius: '16px',
+        padding: '16px',
+        marginBottom: '12px',
+        cursor: 'pointer',
+        boxShadow: '0 0.5px 1px rgba(0,0,0,0.03), 0 1px 4px rgba(0,0,0,0.04)',
+        transition: 'transform 120ms ease-out',
+      }}
+    >
+      {/* ── Top row: Avatar + Name + Badge ── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Group avatar */}
+        <Avatar name={group.name} style={{ width: '48px', height: '48px', fontSize: '18px', flexShrink: 0 }} />
+
+        {/* Name + Subtext */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h4 style={{
+              fontSize: '17px', fontWeight: '600', color: '#1C1C1E',
+              margin: 0, overflow: 'hidden', textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap', flex: 1,
+            }}>
+              {group.name}
+            </h4>
+
+            {/* Status badge */}
+            {isSettled && (
+              <span style={{
+                fontSize: '11px', fontWeight: '700', color: '#34C759',
+                background: '#E5F9EC', padding: '3px 8px', borderRadius: '4px',
+                letterSpacing: '0.5px', flexShrink: 0, lineHeight: '16px',
+              }}>
+                SETTLED
+              </span>
+            )}
+            {isClean && !isSettled && (
+              <span style={{
+                fontSize: '11px', fontWeight: '600', color: '#8E8E93',
+                background: '#F2F2F7', padding: '3px 8px', borderRadius: '4px',
+                letterSpacing: '0.5px', flexShrink: 0, lineHeight: '16px',
+              }}>
+                CLEAN
+              </span>
+            )}
+          </div>
+
+          {/* Subtext */}
+          <p style={{
+            fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
+            lineHeight: '18px', overflow: 'hidden', textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}>
+            {subtext || `${group.members?.length || 0} members`}
+          </p>
+        </div>
+      </div>
+
+      {/* ── Bottom row: Member avatars + Balance ── */}
+      <div style={{
+        display: 'flex', alignItems: 'flex-end',
+        justifyContent: 'space-between', marginTop: '14px',
+      }}>
+        {/* Member avatar stack */}
+        <MemberAvatarStack members={group.members} max={3} />
+
+        {/* Balance */}
+        <div style={{ textAlign: 'right' }}>
+          <p style={{
+            fontSize: '13px', color: '#8E8E93', margin: '0 0 2px',
+            lineHeight: '16px', fontWeight: '400',
+          }}>
+            {balanceLabel}
+          </p>
+          <p style={{
+            fontSize: '17px', fontWeight: '700', color: balanceColor,
+            margin: 0, lineHeight: '22px', letterSpacing: '-0.2px',
+          }}>
+            {balanceAmount}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+/* ────────────────────────────────────────────
+   Main Groups page
+   ──────────────────────────────────────────── */
 export default function Groups() {
   const navigate = useNavigate();
   const { groups, loading, fetchGroups } = useGroupStore();
   const { user } = useAuthStore();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    fetchGroups();
-  }, []);
+  useEffect(() => { fetchGroups(); }, []);
 
-  const activeGroups = groups.filter(g => !g.archived);
-  const archivedGroups = groups.filter(g => g.archived);
+  const currSymbol = '\u20B9';
+
+  const activeGroups = useMemo(() =>
+    groups.filter(g => !g.archived), [groups]);
+
+  const filteredGroups = useMemo(() => {
+    if (!searchQuery.trim()) return activeGroups;
+    const q = searchQuery.toLowerCase();
+    return activeGroups.filter(g => g.name.toLowerCase().includes(q));
+  }, [activeGroups, searchQuery]);
 
   const handleGroupClick = useCallback((id) => {
     navigate(`/groups/${id}`);
   }, [navigate]);
 
   return (
-    <div className="page page-white" style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-      <Header title="Your Groups" />
+    <div style={{
+      background: '#F2F2F7',
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100dvh',
+      maxWidth: '430px',
+      margin: '0 auto',
+      position: 'relative',
+    }}>
 
-      <div style={{ padding: '0 20px', flex: 1, overflowY: 'auto', paddingBottom: '100px' }}>
-        {/* Search & Add */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', margin: '8px 0 24px' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <IoSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '18px' }} />
-            <input
-              type="text"
-              placeholder="Search groups..."
-              style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '12px', border: '1px solid var(--gray-200)', background: 'var(--gray-50)', outline: 'none', fontSize: '17px', transition: 'border-color 200ms ease, box-shadow 200ms ease' }}
-            />
-          </div>
-          <button
-            onClick={() => navigate('/get-started')}
-            style={{ width: '44px', height: '44px', background: 'var(--blue)', color: 'white', borderRadius: '12px', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', cursor: 'pointer', flexShrink: 0, transition: 'transform 120ms ease-out' }}
-          >
-            <IoAdd />
-          </button>
-        </div>
+      {/* ═══════════════ HEADER ═══════════════ */}
+      <div style={{ padding: '12px 20px 0' }}>
 
-        {/* Overall Balance */}
-        {activeGroups.length > 0 && (
-          <div className="card" style={{ marginBottom: '24px', padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>You owe</p>
-                <p style={{ fontSize: '24px', fontWeight: '700', color: 'var(--red)' }}>
-                  {'\u20B9'}{activeGroups.reduce((s, g) => s + (g.balance?.youOwe || 0), 0).toFixed(2)}
-                </p>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>You're owed</p>
-                <p style={{ fontSize: '24px', fontWeight: '700', color: 'var(--green)' }}>
-                  {'\u20B9'}{activeGroups.reduce((s, g) => s + (g.balance?.youAreOwed || 0), 0).toFixed(2)}
-                </p>
-              </div>
+        {/* Search bar – expanded */}
+        {searchOpen ? (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '12px',
+            marginBottom: '8px',
+          }}>
+            <div style={{
+              flex: 1, position: 'relative',
+              display: 'flex', alignItems: 'center',
+            }}>
+              <IoSearch style={{
+                position: 'absolute', left: '12px',
+                color: '#8E8E93', fontSize: '18px', pointerEvents: 'none',
+              }} />
+              <input
+                autoFocus
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search groups..."
+                style={{
+                  width: '100%', padding: '12px 12px 12px 40px',
+                  borderRadius: '12px', border: 'none',
+                  background: '#E5E5EA', outline: 'none',
+                  fontSize: '17px', color: '#1C1C1E',
+                }}
+              />
             </div>
+            <button
+              onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: '#007AFF', fontSize: '17px', fontWeight: '400',
+                padding: '4px 0', flexShrink: 0,
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          /* Title row – "Your Groups" + search icon */
+          <div style={{
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+          }}>
+            <h1 style={{
+              fontSize: '34px', fontWeight: '700', color: '#1C1C1E',
+              margin: 0, letterSpacing: '-0.5px', lineHeight: '1.15',
+            }}>
+              Your Groups
+            </h1>
+
+            <button
+              onClick={() => setSearchOpen(true)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                padding: '4px', color: '#007AFF', display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <IoSearch style={{ fontSize: '24px' }} />
+            </button>
           </div>
         )}
+      </div>
 
-        {/* Loading */}
+      {/* ═══════════════ SCROLLABLE CONTENT ═══════════════ */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        padding: '0 20px',
+        paddingBottom: '100px',
+      }}>
+
+        {/* ── Loading skeletons ── */}
         {loading && activeGroups.length === 0 && (
-          <div style={{ marginTop: '12px' }}>
-            {[1, 2, 3].map(i => (
-              <div key={i} className="card" style={{ marginBottom: '12px', padding: '16px' }}>
+          <div>
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} style={{
+                background: '#FFF', borderRadius: '16px',
+                padding: '16px', marginBottom: '12px',
+              }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Skeleton width="44px" height="44px" borderRadius="50%" />
+                  <Skeleton width="48px" height="48px" borderRadius="50%" />
                   <div style={{ flex: 1 }}>
-                    <Skeleton width="60%" height="18px" style={{ marginBottom: '8px' }} />
-                    <Skeleton width="40%" height="13px" />
+                    <Skeleton width="55%" height="18px" style={{ marginBottom: '6px' }} />
+                    <Skeleton width="70%" height="13px" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px' }}>
+                  <Skeleton width="80px" height="28px" borderRadius="14px" />
+                  <div>
+                    <Skeleton width="70px" height="13px" style={{ marginBottom: '4px', marginLeft: 'auto' }} />
+                    <Skeleton width="50px" height="18px" style={{ marginLeft: 'auto' }} />
                   </div>
                 </div>
               </div>
@@ -84,81 +318,87 @@ export default function Groups() {
           </div>
         )}
 
-        {/* Empty State */}
+        {/* ── Empty state ── */}
         {!loading && activeGroups.length === 0 && (
-          <div className="empty-state">
-            <div className="empty-state-icon">
-              <IoPeopleOutline style={{ fontSize: '32px' }} />
+          <div style={{
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            padding: '80px 20px', textAlign: 'center',
+          }}>
+            <div style={{
+              width: '80px', height: '80px', borderRadius: '50%',
+              background: '#E5E5EA',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: '20px',
+            }}>
+              <IoPeopleOutline style={{ fontSize: '36px', color: '#8E8E93' }} />
             </div>
-            <h3 className="empty-state-title">No groups yet</h3>
-            <p className="empty-state-text">Create a group to start splitting expenses.</p>
-            <button className="btn-primary" style={{ maxWidth: '240px' }} onClick={() => navigate('/get-started')}>
+            <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1C1C1E', marginBottom: '8px' }}>
+              No groups yet
+            </h3>
+            <p style={{ fontSize: '15px', color: '#8E8E93', marginBottom: '32px', lineHeight: '1.5' }}>
+              Create a group to start splitting expenses with your friends.
+            </p>
+            <button
+              onClick={() => navigate('/get-started')}
+              style={{
+                background: '#007AFF', color: 'white',
+                fontSize: '17px', fontWeight: '600',
+                padding: '14px 40px', borderRadius: '14px',
+                border: 'none', cursor: 'pointer',
+                transition: 'transform 120ms ease-out',
+              }}
+            >
               Create Group
             </button>
           </div>
         )}
 
-        {/* Active Groups */}
-        {activeGroups.length > 0 && (
+        {/* ── Group cards ── */}
+        {filteredGroups.length > 0 && (
           <div>
-            <h3 className="caption" style={{ marginBottom: '12px' }}>ACTIVE</h3>
-            {activeGroups.map(group => (
-              <div
+            {filteredGroups.map(group => (
+              <GroupCard
                 key={group._id}
-                className="card animate-fade-in"
-                style={{ marginBottom: '12px', padding: '16px', cursor: 'pointer' }}
+                group={group}
+                currSymbol={currSymbol}
                 onClick={() => handleGroupClick(group._id)}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Avatar name={group.name} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <h4 style={{ fontSize: '17px', fontWeight: '600', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{group.name}</h4>
-                      {group.balance?.isSettled && (
-                        <span className="badge badge-green" style={{ fontSize: '11px', marginLeft: '8px', flexShrink: 0 }}>SETTLED</span>
-                      )}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '4px' }}>
-                      <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                        {group.members?.length || 0} member{(group.members?.length || 0) !== 1 ? 's' : ''}
-                      </span>
-                      <span style={{ fontSize: '15px', fontWeight: '600', color: group.balance?.youOwe > 0 ? 'var(--red)' : group.balance?.youAreOwed > 0 ? 'var(--green)' : 'var(--text-secondary)' }}>
-                        {group.balance?.youOwe > 0 && `You owe \u20B9${group.balance.youOwe.toFixed(0)}`}
-                        {group.balance?.youAreOwed > 0 && `You are owed \u20B9${group.balance.youAreOwed.toFixed(0)}`}
-                        {!group.balance?.youOwe && !group.balance?.youAreOwed && !group.balance?.isSettled && 'No expenses'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              />
             ))}
           </div>
         )}
 
-        {/* Archived */}
-        {archivedGroups.length > 0 && (
-          <div style={{ marginTop: '24px' }}>
-            <h3 className="caption" style={{ marginBottom: '12px' }}>ARCHIVED</h3>
-            {archivedGroups.map(group => (
-              <div
-                key={group._id}
-                className="card"
-                style={{ marginBottom: '12px', padding: '16px', opacity: 0.6, cursor: 'pointer' }}
-                onClick={() => handleGroupClick(group._id)}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Avatar name={group.name} />
-                  <div style={{ flex: 1 }}>
-                    <h4 style={{ fontSize: '17px', fontWeight: '600' }}>{group.name}</h4>
-                    <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Archived</span>
-                  </div>
-                </div>
-              </div>
-            ))}
+        {/* ── Search no results ── */}
+        {searchQuery && filteredGroups.length === 0 && activeGroups.length > 0 && (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <p style={{ fontSize: '17px', color: '#8E8E93', fontWeight: '500' }}>
+              No groups matching "{searchQuery}"
+            </p>
           </div>
         )}
       </div>
 
+      {/* ═══════════════ FAB (bottom-right) ═══════════════ */}
+      <button
+        onClick={() => navigate('/get-started')}
+        style={{
+          position: 'fixed',
+          bottom: 'calc(76px + env(safe-area-inset-bottom, 0px))',
+          right: 'max(20px, calc((100vw - 430px) / 2 + 20px))',
+          width: '56px', height: '56px',
+          borderRadius: '50%', background: '#007AFF',
+          color: 'white', border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '28px', fontWeight: '300',
+          boxShadow: '0 4px 14px rgba(0,122,255,0.35)',
+          transition: 'transform 120ms ease-out',
+          zIndex: 99,
+        }}
+      >
+        <span style={{ lineHeight: 1 }}>+</span>
+      </button>
+
+      {/* ═══════════════ BOTTOM NAV ═══════════════ */}
       <BottomNav />
     </div>
   );
