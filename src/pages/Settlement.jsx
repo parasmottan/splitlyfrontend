@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoChevronBack } from 'react-icons/io5';
-import { IoArrowForward } from 'react-icons/io5';
+import { IoChevronBack, IoArrowForward, IoCheckmarkCircle } from 'react-icons/io5';
 import useSettlementStore from '../stores/settlementStore';
 import useGroupStore from '../stores/groupStore';
 import Avatar from '../components/Avatar';
@@ -20,7 +19,7 @@ export default function Settlement() {
     fetchSettlements(id);
   }, [id]);
 
-  const handleSettleAll = async () => {
+  const handleSettleAll = useCallback(async () => {
     setSettling(true);
     try {
       await settleAll(id);
@@ -30,9 +29,9 @@ export default function Settlement() {
       // error handled in store
     }
     setSettling(false);
-  };
+  }, [id, settleAll, fetchGroup, navigate]);
 
-  const handleSettleSingle = async (transfer) => {
+  const handleSettleSingle = useCallback(async (transfer) => {
     try {
       await settleSingle(id, {
         fromUser: transfer.from._id,
@@ -42,38 +41,35 @@ export default function Settlement() {
       fetchSettlements(id);
       fetchGroup(id);
     } catch (err) { }
-  };
+  }, [id, settleSingle, fetchSettlements, fetchGroup]);
 
   if (loading && !settlementData) {
     return (
       <div className="page page-white" style={{ padding: '0 20px' }}>
         <div className="header">
           <button className="header-back" onClick={() => navigate(-1)}>
-            <IoChevronBack /> Back
+            <IoChevronBack style={{ fontSize: '20px' }} /> Back
           </button>
           <span className="header-title">Settle Up</span>
           <div style={{ width: '60px' }}></div>
         </div>
         <div style={{ textAlign: 'center', padding: '24px 0' }}>
-          <Skeleton width="80px" height="12px" style={{ margin: '0 auto 8px' }} />
-          <Skeleton width="140px" height="36px" style={{ margin: '0 auto 8px' }} />
-          <Skeleton width="100px" height="12px" style={{ margin: '0 auto' }} />
+          <Skeleton width="100px" height="13px" style={{ margin: '0 auto 8px' }} />
+          <Skeleton width="160px" height="36px" style={{ margin: '0 auto 8px' }} />
+          <Skeleton width="120px" height="13px" style={{ margin: '0 auto' }} />
         </div>
-        <Skeleton width="120px" height="14px" style={{ marginBottom: '16px' }} />
+        <Skeleton width="140px" height="14px" style={{ marginBottom: '16px' }} />
         {[1, 2].map(i => (
           <div key={i} className="card" style={{ marginBottom: '10px', padding: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Skeleton width="32px" height="32px" borderRadius="50%" />
-              <div style={{ textAlign: 'center' }}>
-                <Skeleton width="20px" height="10px" style={{ marginBottom: '4px' }} />
-                <Skeleton width="20px" height="20px" />
-              </div>
+              <Skeleton width="20px" height="20px" />
               <Skeleton width="32px" height="32px" borderRadius="50%" />
               <div style={{ flex: 1 }}>
                 <Skeleton width="60px" height="16px" style={{ marginBottom: '6px' }} />
                 <Skeleton width="80px" height="12px" />
               </div>
-              <Skeleton width="70px" height="32px" borderRadius="var(--radius-full)" />
+              <Skeleton width="70px" height="32px" borderRadius="9999px" />
             </div>
           </div>
         ))}
@@ -82,14 +78,14 @@ export default function Settlement() {
   }
 
   const data = settlementData;
-  const currSymbol = data?.currencySymbol || '₹';
+  const currSymbol = data?.currencySymbol || '\u20B9';
 
   return (
     <div className="page page-white" style={{ padding: '0 20px' }}>
       {/* Header */}
       <div className="header">
         <button className="header-back" onClick={() => navigate(-1)}>
-          <IoChevronBack /> Back
+          <IoChevronBack style={{ fontSize: '20px' }} /> Back
         </button>
         <span className="header-title">Settle Up</span>
         <div style={{ width: '60px' }}></div>
@@ -97,12 +93,12 @@ export default function Settlement() {
 
       {/* Summary */}
       <div style={{ textAlign: 'center', padding: '24px 0' }}>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '4px' }}>Total to settle</p>
-        <p style={{ fontSize: '36px', fontWeight: '800' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Total to settle</p>
+        <p style={{ fontSize: '36px', fontWeight: '700', letterSpacing: '-0.5px' }}>
           {currSymbol}{(data?.totalToSettle || 0).toFixed(2)}
         </p>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-          {data?.pendingCount || 0} payment{data?.pendingCount !== 1 ? 's' : ''} needed
+        <p style={{ fontSize: '15px', color: 'var(--text-secondary)', marginTop: '4px' }}>
+          {data?.pendingCount || 0} payment{data?.pendingCount !== 1 ? 's' : ''} pending
         </p>
       </div>
 
@@ -112,22 +108,22 @@ export default function Settlement() {
           <h3 className="caption" style={{ marginBottom: '12px' }}>OPTIMIZED PAYMENTS</h3>
           {data.transfers.map((transfer, i) => (
             <div key={i} className="card animate-fade-in" style={{ marginBottom: '10px', padding: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Avatar name={transfer.from.name} size="sm" />
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: '0 0 auto' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>pays</span>
-                  <IoArrowForward style={{ color: 'var(--blue)', fontSize: '18px' }} />
+                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>pays</span>
+                  <IoArrowForward style={{ color: 'var(--blue)', fontSize: '16px' }} />
                 </div>
                 <Avatar name={transfer.to.name} size="sm" />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontWeight: '600', fontSize: '16px' }}>{currSymbol}{transfer.amount.toFixed(2)}</p>
-                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {transfer.from.name?.split(' ')[0]} → {transfer.to.name?.split(' ')[0]}
+                  <p style={{ fontWeight: '600', fontSize: '17px' }}>{currSymbol}{transfer.amount.toFixed(2)}</p>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {transfer.from.name?.split(' ')[0]} to {transfer.to.name?.split(' ')[0]}
                   </p>
                 </div>
                 <button
                   onClick={() => handleSettleSingle(transfer)}
-                  style={{ padding: '8px 16px', background: 'var(--blue-light)', color: 'var(--blue)', borderRadius: 'var(--radius-full)', fontWeight: '600', fontSize: '13px', border: 'none', cursor: 'pointer' }}
+                  style={{ padding: '8px 16px', background: 'var(--blue-light)', color: 'var(--blue)', borderRadius: '9999px', fontWeight: '600', fontSize: '14px', border: 'none', cursor: 'pointer', transition: 'transform 120ms ease-out' }}
                 >
                   Settle
                 </button>
@@ -137,7 +133,9 @@ export default function Settlement() {
         </div>
       ) : (
         <div className="empty-state" style={{ padding: '40px 20px' }}>
-          <div className="empty-state-icon">✅</div>
+          <div className="empty-state-icon">
+            <IoCheckmarkCircle style={{ fontSize: '32px', color: 'var(--green)' }} />
+          </div>
           <h3 className="empty-state-title">All settled!</h3>
           <p className="empty-state-text">Everyone's even. Great teamwork!</p>
         </div>
@@ -152,18 +150,17 @@ export default function Settlement() {
       {/* Confirm Modal */}
       <Modal
         show={showSettleModal}
-        icon="💸"
         title="Settle All?"
         message={`Mark all ${data?.pendingCount || 0} payment(s) totalling ${currSymbol}${(data?.totalToSettle || 0).toFixed(2)} as settled?`}
         onClose={() => setShowSettleModal(false)}
+        variant="alert"
       >
-        <div className="modal-actions">
-          <div className="modal-actions-row">
-            <button onClick={() => setShowSettleModal(false)} style={{ background: 'var(--gray-100)', color: 'var(--text-primary)' }}>Cancel</button>
-            <button onClick={handleSettleAll} disabled={settling} style={{ background: 'var(--blue)', color: 'white' }}>
-              {settling ? 'Settling...' : 'Confirm'}
-            </button>
-          </div>
+        <div className="modal-divider" />
+        <div className="modal-actions-row">
+          <button onClick={() => setShowSettleModal(false)}>Cancel</button>
+          <button className="modal-btn-primary" onClick={handleSettleAll} disabled={settling}>
+            {settling ? 'Settling...' : 'Confirm'}
+          </button>
         </div>
       </Modal>
     </div>

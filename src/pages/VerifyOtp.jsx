@@ -8,11 +8,10 @@ export default function VerifyOtp() {
   const location = useLocation();
   const { verifyOtp, resendOtp, error, clearError } = useAuthStore();
 
-  // Get registration data from location state
   const { name, email, password } = location.state || {};
 
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [timer, setTimer] = useState(300); // 5 minutes
+  const [timer, setTimer] = useState(300);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const inputRefs = useRef([]);
@@ -44,7 +43,6 @@ export default function VerifyOtp() {
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
 
-    // Auto focus next
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
     }
@@ -53,6 +51,20 @@ export default function VerifyOtp() {
   const handleKeyDown = (e, index) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
+    }
+  };
+
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length > 0) {
+      const newOtp = [...otp];
+      for (let i = 0; i < pasted.length; i++) {
+        newOtp[i] = pasted[i];
+      }
+      setOtp(newOtp);
+      const focusIndex = Math.min(pasted.length, 5);
+      inputRefs.current[focusIndex]?.focus();
     }
   };
 
@@ -85,23 +97,23 @@ export default function VerifyOtp() {
 
   return (
     <div className="page page-white" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh', padding: '40px 20px' }}>
-      <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--gray-50)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '32px' }}>
+      <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '32px' }}>
         <IoMailOutline style={{ fontSize: '32px', color: 'var(--blue)' }} />
       </div>
 
       <h1 className="title-large" style={{ marginBottom: '8px', textAlign: 'center' }}>Verify Email</h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '15px', textAlign: 'center', marginBottom: '48px', maxWidth: '280px', lineHeight: '1.5' }}>
-        We've sent a 6-digit code to your email <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>{email}</span>.
+      <p style={{ color: 'var(--text-secondary)', fontSize: '15px', textAlign: 'center', marginBottom: '40px', maxWidth: '280px', lineHeight: '1.5' }}>
+        We've sent a 6-digit code to your email.
       </p>
 
       {error && (
-        <div style={{ background: 'var(--red-light)', color: 'var(--red)', padding: '12px 16px', borderRadius: 'var(--radius-md)', marginBottom: '32px', fontSize: '14px', width: '100%' }}>
+        <div style={{ background: 'var(--red-light)', color: 'var(--red)', padding: '12px 16px', borderRadius: '12px', marginBottom: '32px', fontSize: '15px', width: '100%' }}>
           {error}
         </div>
       )}
 
       <form onSubmit={handleVerify} style={{ width: '100%' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
           {otp.map((digit, index) => (
             <input
               key={index}
@@ -112,17 +124,19 @@ export default function VerifyOtp() {
               value={digit}
               onChange={(e) => { handleChange(e, index); clearError(); }}
               onKeyDown={(e) => handleKeyDown(e, index)}
+              onPaste={index === 0 ? handlePaste : undefined}
               style={{
                 width: '48px',
                 height: '56px',
-                borderRadius: '50%',
-                border: digit ? '2px solid var(--blue)' : '1px solid var(--gray-300)',
-                background: 'var(--white)',
-                fontSize: '20px',
+                borderRadius: '12px',
+                border: digit ? '2px solid var(--blue)' : '1.5px solid var(--gray-300)',
+                background: digit ? 'var(--white)' : 'var(--gray-50)',
+                fontSize: '22px',
                 fontWeight: '700',
                 textAlign: 'center',
                 outline: 'none',
-                transition: 'all 0.2s ease'
+                transition: 'border-color 200ms ease, box-shadow 200ms ease, background 200ms ease',
+                boxShadow: digit ? '0 0 0 3px rgba(0, 122, 255, 0.08)' : 'none'
               }}
             />
           ))}
@@ -130,10 +144,10 @@ export default function VerifyOtp() {
 
         <p style={{ textAlign: 'center', marginBottom: '40px', fontSize: '15px', color: 'var(--text-secondary)' }}>
           {timer > 0 ? (
-            <span>Resend code in <span style={{ color: 'var(--text-primary)', fontWeight: '700' }}>{formatTime(timer)}</span></span>
+            <span>Resend code in <span style={{ color: 'var(--text-primary)', fontWeight: '600' }}>{formatTime(timer)}</span></span>
           ) : (
             <span style={{ color: 'var(--blue)', fontWeight: '600', cursor: 'pointer' }} onClick={handleResend}>
-              {resending ? 'Resending...' : 'Resend OTP'}
+              {resending ? 'Resending...' : 'Resend Code'}
             </span>
           )}
         </p>

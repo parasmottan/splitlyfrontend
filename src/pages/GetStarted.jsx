@@ -9,7 +9,7 @@ export default function GetStarted() {
   return (
     <div className="page page-white" style={{ padding: '60px 20px', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
       <h1 className="title-large" style={{ marginBottom: '12px' }}>Get Started</h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '16px', lineHeight: '1.5', marginBottom: '40px' }}>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '17px', lineHeight: '1.5', marginBottom: '40px' }}>
         Start a new shared ledger or join an existing one.
       </p>
 
@@ -19,8 +19,8 @@ export default function GetStarted() {
         style={{ padding: '24px', marginBottom: '16px', cursor: 'pointer' }}
         onClick={() => navigate('/create-group')}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <div style={{ width: '40px', height: '40px', background: 'var(--blue-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div style={{ width: '44px', height: '44px', background: 'var(--blue-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <HiOutlinePlus style={{ fontSize: '20px', color: 'var(--blue)' }} />
           </div>
           <IoChevronForward style={{ fontSize: '20px', color: 'var(--gray-400)' }} />
@@ -37,8 +37,8 @@ export default function GetStarted() {
         style={{ padding: '24px', cursor: 'pointer' }}
         onClick={() => navigate('/join-group')}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <div style={{ width: '40px', height: '40px', background: 'var(--blue-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div style={{ width: '44px', height: '44px', background: 'var(--blue-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <HiOutlineUserPlus style={{ fontSize: '20px', color: 'var(--blue)' }} />
           </div>
           <IoChevronForward style={{ fontSize: '20px', color: 'var(--gray-400)' }} />
@@ -51,7 +51,7 @@ export default function GetStarted() {
 
       <div style={{ flex: 1 }}></div>
 
-      <button className="btn-secondary" style={{ marginBottom: '20px', color: 'var(--blue)' }}>
+      <button className="btn-secondary" style={{ marginBottom: '20px', color: 'var(--blue)', fontSize: '17px' }}>
         Restore Purchases
       </button>
     </div>

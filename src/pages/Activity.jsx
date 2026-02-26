@@ -2,21 +2,8 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import useAuthStore from '../stores/authStore';
 import BottomNav from '../components/BottomNav';
-import Avatar from '../components/Avatar';
 import Skeleton from '../components/Skeleton';
-
-const CATEGORY_ICONS = {
-  food: '🍽️',
-  transport: '🚗',
-  groceries: '🛒',
-  entertainment: '🎬',
-  utilities: '💡',
-  rent: '🏠',
-  travel: '✈️',
-  shopping: '🛍️',
-  settlement: '💸',
-  other: '📋'
-};
+import { IoReceiptOutline } from 'react-icons/io5';
 
 export default function Activity() {
   const { user } = useAuthStore();
@@ -37,6 +24,10 @@ export default function Activity() {
   }, []);
 
   const dateKeys = Object.keys(activityData);
+
+  const getCategoryInitial = (category) => {
+    return (category || 'O').charAt(0).toUpperCase();
+  };
 
   return (
     <div className="page" style={{ background: 'var(--gray-50)' }}>
@@ -73,7 +64,9 @@ export default function Activity() {
 
       {!loading && dateKeys.length === 0 && (
         <div className="empty-state">
-          <div className="empty-state-icon">📋</div>
+          <div className="empty-state-icon">
+            <IoReceiptOutline style={{ fontSize: '32px' }} />
+          </div>
           <h3 className="empty-state-title">No activity yet</h3>
           <p className="empty-state-text">Your expense history will appear here.</p>
         </div>
@@ -87,15 +80,15 @@ export default function Activity() {
             return (
               <div key={item._id} className="card animate-fade-in" style={{ marginBottom: '8px', padding: '14px 16px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', flexShrink: 0 }}>
-                    {CATEGORY_ICONS[item.category] || '📋'}
+                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '600', color: 'var(--text-secondary)', flexShrink: 0 }}>
+                    {getCategoryInitial(item.category)}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: '600', fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontWeight: '600', fontSize: '17px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.description}
                       </span>
-                      <span style={{ fontWeight: '600', fontSize: '16px', color: isPositive ? 'var(--green)' : 'var(--red)', flexShrink: 0, marginLeft: '8px' }}>
+                      <span style={{ fontWeight: '600', fontSize: '17px', color: isPositive ? 'var(--green)' : 'var(--red)', flexShrink: 0, marginLeft: '8px' }}>
                         {isPositive ? '+' : '-'}{item.currencySymbol}{Math.abs(item.amount).toFixed(2)}
                       </span>
                     </div>
@@ -103,7 +96,7 @@ export default function Activity() {
                       <span style={{ fontSize: '13px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.groupName}
                       </span>
-                      <span style={{ fontSize: '12px', color: 'var(--text-tertiary)', flexShrink: 0 }}>
+                      <span style={{ fontSize: '13px', color: 'var(--text-tertiary)', flexShrink: 0 }}>
                         {new Date(item.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

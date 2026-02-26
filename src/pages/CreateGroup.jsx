@@ -6,10 +6,10 @@ import useGroupStore from '../stores/groupStore';
 
 const TYPES = ['Trip', 'House', 'Project', 'Couple', 'Other'];
 const CURRENCIES = [
-  { code: 'INR', symbol: '₹', label: 'INR (₹)' },
+  { code: 'INR', symbol: '\u20B9', label: 'INR (\u20B9)' },
   { code: 'USD', symbol: '$', label: 'USD ($)' },
-  { code: 'EUR', symbol: '€', label: 'EUR (€)' },
-  { code: 'GBP', symbol: '£', label: 'GBP (£)' },
+  { code: 'EUR', symbol: '\u20AC', label: 'EUR (\u20AC)' },
+  { code: 'GBP', symbol: '\u00A3', label: 'GBP (\u00A3)' },
 ];
 
 export default function CreateGroup() {
@@ -30,7 +30,7 @@ export default function CreateGroup() {
         name: name.trim(),
         type: type.toLowerCase(),
         currency,
-        currencySymbol: selectedCurrency?.symbol || '₹'
+        currencySymbol: selectedCurrency?.symbol || '\u20B9'
       });
       navigate(`/groups/${group._id}`, { replace: true });
     } catch (err) {
@@ -43,12 +43,13 @@ export default function CreateGroup() {
       {/* Header */}
       <div className="header">
         <button className="header-back" onClick={() => navigate(-1)}>
-          <IoChevronBack /> Back
+          <IoChevronBack style={{ fontSize: '20px' }} /> Back
         </button>
+        <span className="header-title">New Group</span>
+        <div style={{ width: '60px' }}></div>
       </div>
 
-      <h1 className="title-large" style={{ marginBottom: '8px' }}>New Group</h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '16px', marginBottom: '32px' }}>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '32px', marginTop: '8px' }}>
         Give your group a name and add a photo.
       </p>
 
@@ -57,7 +58,7 @@ export default function CreateGroup() {
         <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
           <HiOutlineCamera style={{ fontSize: '32px', color: 'var(--gray-400)' }} />
           <div style={{ position: 'absolute', bottom: '0', right: '0', width: '28px', height: '28px', background: 'var(--blue)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid white' }}>
-            <span style={{ color: 'white', fontSize: '14px' }}>✎</span>
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </div>
         </div>
       </div>
@@ -71,7 +72,7 @@ export default function CreateGroup() {
             placeholder="e.g. Summer Trip"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ textAlign: 'right', border: 'none', fontSize: '16px', color: 'var(--text-tertiary)', background: 'transparent', width: '60%' }}
+            style={{ textAlign: 'right', border: 'none', fontSize: '17px', color: name ? 'var(--text-primary)' : 'var(--text-tertiary)', background: 'transparent', width: '60%', outline: 'none' }}
           />
         </div>
 
@@ -84,11 +85,11 @@ export default function CreateGroup() {
         </div>
 
         {showTypePicker && (
-          <div style={{ padding: '8px 0', borderTop: '1px solid var(--gray-100)' }}>
+          <div style={{ padding: '8px 0', borderTop: '0.5px solid var(--gray-200)' }}>
             {TYPES.map(t => (
               <div
                 key={t}
-                style={{ padding: '10px 0', cursor: 'pointer', color: type === t.toLowerCase() ? 'var(--blue)' : 'var(--text-primary)', fontWeight: type === t.toLowerCase() ? '600' : '400' }}
+                style={{ padding: '10px 0', cursor: 'pointer', color: type === t.toLowerCase() ? 'var(--blue)' : 'var(--text-primary)', fontWeight: type === t.toLowerCase() ? '600' : '400', fontSize: '17px' }}
                 onClick={() => { setType(t.toLowerCase()); setShowTypePicker(false); }}
               >
                 {t}
@@ -108,11 +109,11 @@ export default function CreateGroup() {
         </div>
 
         {showCurrencyPicker && (
-          <div style={{ padding: '8px 0', borderTop: '1px solid var(--gray-100)' }}>
+          <div style={{ padding: '8px 0', borderTop: '0.5px solid var(--gray-200)' }}>
             {CURRENCIES.map(c => (
               <div
                 key={c.code}
-                style={{ padding: '10px 0', cursor: 'pointer', color: currency === c.code ? 'var(--blue)' : 'var(--text-primary)', fontWeight: currency === c.code ? '600' : '400' }}
+                style={{ padding: '10px 0', cursor: 'pointer', color: currency === c.code ? 'var(--blue)' : 'var(--text-primary)', fontWeight: currency === c.code ? '600' : '400', fontSize: '17px' }}
                 onClick={() => { setCurrency(c.code); setShowCurrencyPicker(false); }}
               >
                 {c.label}

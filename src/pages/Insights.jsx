@@ -41,21 +41,18 @@ export default function Insights() {
           <Skeleton width="120px" height="34px" style={{ marginBottom: '8px' }} />
         </div>
 
-        {/* Group Filter Skeleton */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
           {[1, 2, 3].map(i => (
-            <Skeleton key={i} width="60px" height="32px" borderRadius="var(--radius-full)" />
+            <Skeleton key={i} width="60px" height="32px" borderRadius="9999px" />
           ))}
         </div>
 
-        {/* Fairness Score Skeleton */}
         <div className="card" style={{ padding: '24px', marginBottom: '16px', textAlign: 'center' }}>
           <Skeleton width="80px" height="13px" style={{ margin: '0 auto 16px' }} />
           <Skeleton width="120px" height="120px" borderRadius="50%" style={{ margin: '0 auto 16px' }} />
           <Skeleton width="140px" height="14px" style={{ margin: '0 auto' }} />
         </div>
 
-        {/* Spending Summary Skeleton */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
           <div className="card" style={{ flex: 1, padding: '16px' }}>
             <Skeleton width="60px" height="12px" style={{ margin: '0 auto 8px' }} />
@@ -69,7 +66,6 @@ export default function Insights() {
           </div>
         </div>
 
-        {/* Categories Skeleton */}
         <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
           <Skeleton width="140px" height="16px" style={{ marginBottom: '20px' }} />
           {[1, 2, 3].map(i => (
@@ -89,6 +85,7 @@ export default function Insights() {
   }
 
   const maxCategoryAmount = data?.categories?.length > 0 ? Math.max(...data.categories.map(c => c.amount)) : 0;
+  const currSymbol = '\u20B9';
 
   return (
     <div className="page" style={{ background: 'var(--gray-50)' }}>
@@ -98,20 +95,21 @@ export default function Insights() {
 
       {/* Group Filter Tabs */}
       {data?.groupTabs?.length > 0 && (
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
           <button
             onClick={() => handleGroupFilter('all')}
             style={{
               padding: '8px 16px',
-              borderRadius: 'var(--radius-full)',
+              borderRadius: '9999px',
               background: selectedGroup === 'all' ? 'var(--blue)' : 'var(--white)',
               color: selectedGroup === 'all' ? 'var(--white)' : 'var(--text-secondary)',
               fontWeight: '600',
-              fontSize: '13px',
+              fontSize: '14px',
               border: 'none',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
-              boxShadow: 'var(--shadow-sm)'
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'transform 120ms ease-out'
             }}
           >
             All
@@ -122,15 +120,16 @@ export default function Insights() {
               onClick={() => handleGroupFilter(g._id)}
               style={{
                 padding: '8px 16px',
-                borderRadius: 'var(--radius-full)',
+                borderRadius: '9999px',
                 background: selectedGroup === g._id ? 'var(--blue)' : 'var(--white)',
                 color: selectedGroup === g._id ? 'var(--white)' : 'var(--text-secondary)',
                 fontWeight: '600',
-                fontSize: '13px',
+                fontSize: '14px',
                 border: 'none',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                boxShadow: 'var(--shadow-sm)'
+                boxShadow: 'var(--shadow-sm)',
+                transition: 'transform 120ms ease-out'
               }}
             >
               {g.name}
@@ -141,7 +140,7 @@ export default function Insights() {
 
       {/* Fairness Score */}
       <div className="card" style={{ padding: '24px', marginBottom: '16px', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '16px' }}>Fairness Score</p>
+        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fairness Score</p>
         <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 16px' }}>
           <svg viewBox="0 0 120 120" style={{ width: '120px', height: '120px', transform: 'rotate(-90deg)' }}>
             <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray-200)" strokeWidth="10" />
@@ -151,13 +150,14 @@ export default function Insights() {
               strokeWidth="10"
               strokeLinecap="round"
               strokeDasharray={`${(data?.fairnessScore || 0) * 3.14} 314`}
+              style={{ transition: 'stroke-dasharray 500ms ease-out' }}
             />
           </svg>
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <span style={{ fontSize: '32px', fontWeight: '800' }}>{data?.fairnessScore || 0}</span>
+            <span style={{ fontSize: '32px', fontWeight: '700' }}>{data?.fairnessScore || 0}</span>
           </div>
         </div>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+        <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>
           {data?.fairnessScore >= 80 ? 'Great balance!' : data?.fairnessScore >= 50 ? 'Could be fairer' : 'Unbalanced spending'}
         </p>
       </div>
@@ -165,30 +165,30 @@ export default function Insights() {
       {/* Spending Summary */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
         <div className="card" style={{ flex: 1, padding: '16px', textAlign: 'center' }}>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Total Spent</p>
-          <p style={{ fontSize: '22px', fontWeight: '700' }}>₹{(data?.totalSpent || 0).toFixed(0)}</p>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Total Spent</p>
+          <p style={{ fontSize: '22px', fontWeight: '700' }}>{currSymbol}{(data?.totalSpent || 0).toFixed(0)}</p>
           {data?.monthChange !== 0 && (
-            <span style={{ fontSize: '12px', color: data?.monthChange > 0 ? 'var(--red)' : 'var(--green)', fontWeight: '600' }}>
-              {data?.monthChange > 0 ? '↑' : '↓'}{Math.abs(data?.monthChange)}% vs last month
+            <span style={{ fontSize: '13px', color: data?.monthChange > 0 ? 'var(--red)' : 'var(--green)', fontWeight: '600' }}>
+              {data?.monthChange > 0 ? '\u2191' : '\u2193'}{Math.abs(data?.monthChange)}% vs last month
             </span>
           )}
         </div>
         <div className="card" style={{ flex: 1, padding: '16px', textAlign: 'center' }}>
-          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Your Share</p>
-          <p style={{ fontSize: '22px', fontWeight: '700' }}>₹{(data?.yourShare || 0).toFixed(0)}</p>
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{data?.sharePercentage || 0}% of total</span>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Your Share</p>
+          <p style={{ fontSize: '22px', fontWeight: '700' }}>{currSymbol}{(data?.yourShare || 0).toFixed(0)}</p>
+          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{data?.sharePercentage || 0}% of total</span>
         </div>
       </div>
 
       {/* Spending by Category */}
       {data?.categories?.length > 0 && (
         <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>Spending by Category</h3>
+          <h3 style={{ fontSize: '17px', fontWeight: '600', marginBottom: '16px' }}>Spending by Category</h3>
           {data.categories.map((cat, i) => (
-            <div key={cat.name} style={{ marginBottom: '16px' }}>
+            <div key={cat.name} style={{ marginBottom: i < data.categories.length - 1 ? '16px' : '0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <span style={{ fontSize: '14px', fontWeight: '500' }}>{cat.name}</span>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>₹{cat.amount.toFixed(0)}</span>
+                <span style={{ fontSize: '15px', fontWeight: '500' }}>{cat.name}</span>
+                <span style={{ fontSize: '15px', fontWeight: '600' }}>{currSymbol}{cat.amount.toFixed(0)}</span>
               </div>
               <div style={{ height: '8px', background: 'var(--gray-100)', borderRadius: '4px', overflow: 'hidden' }}>
                 <div style={{
@@ -196,7 +196,7 @@ export default function Insights() {
                   width: `${(cat.amount / maxCategoryAmount) * 100}%`,
                   background: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
                   borderRadius: '4px',
-                  transition: 'width 0.5s ease'
+                  transition: 'width 500ms ease-out'
                 }}></div>
               </div>
             </div>

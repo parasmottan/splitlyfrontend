@@ -27,10 +27,10 @@ export default function Register() {
   return (
     <div className="page page-white" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100dvh', padding: '40px 20px' }}>
       <h1 className="title-large" style={{ marginBottom: '8px' }}>Create Account</h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '16px', marginBottom: '40px' }}>Start splitting expenses today</p>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '40px' }}>Start splitting expenses today</p>
 
       {error && (
-        <div style={{ background: 'var(--red-light)', color: 'var(--red)', padding: '12px 16px', borderRadius: 'var(--radius-md)', marginBottom: '20px', fontSize: '14px' }}>
+        <div style={{ background: 'var(--red-light)', color: 'var(--red)', padding: '12px 16px', borderRadius: '12px', marginBottom: '20px', fontSize: '15px', lineHeight: '1.4' }}>
           {error}
         </div>
       )}

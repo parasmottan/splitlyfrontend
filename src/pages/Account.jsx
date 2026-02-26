@@ -27,7 +27,7 @@ export default function Account() {
         <Avatar name={user?.name} size="lg" />
         <div>
           <h3 style={{ fontSize: '20px', fontWeight: '700' }}>{user?.name}</h3>
-          <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>{user?.email}</p>
+          <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>{user?.email}</p>
         </div>
       </div>
 
@@ -47,7 +47,7 @@ export default function Account() {
       <div className="card" style={{ padding: '0 16px', marginBottom: '32px' }}>
         <div className="form-row">
           <span className="form-row-label">Default Currency</span>
-          <span className="form-row-value">INR (₹) <IoChevronForward style={{ fontSize: '16px', color: 'var(--gray-400)' }} /></span>
+          <span className="form-row-value">INR ({'\u20B9'}) <IoChevronForward style={{ fontSize: '16px', color: 'var(--gray-400)' }} /></span>
         </div>
         <div className="form-row">
           <span className="form-row-label">App Version</span>
@@ -58,25 +58,24 @@ export default function Account() {
       {/* Logout */}
       <button
         onClick={() => setShowLogoutModal(true)}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '16px', color: 'var(--red)', fontSize: '17px', fontWeight: '600', border: 'none', background: 'none', cursor: 'pointer' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '16px', color: 'var(--red)', fontSize: '17px', fontWeight: '600', border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 120ms ease-out' }}
       >
         <IoLogOutOutline style={{ fontSize: '22px' }} />
         Sign Out
       </button>
 
-      {/* Logout Modal */}
+      {/* Logout Modal – iOS Alert */}
       <Modal
         show={showLogoutModal}
-        icon="👋"
         title="Sign Out?"
         message="You'll need to sign in again to access your groups and expenses."
         onClose={() => setShowLogoutModal(false)}
+        variant="alert"
       >
-        <div className="modal-actions">
-          <div className="modal-actions-row">
-            <button onClick={() => setShowLogoutModal(false)} style={{ background: 'var(--gray-100)', color: 'var(--text-primary)' }}>Cancel</button>
-            <button onClick={handleLogout} style={{ background: 'var(--red)', color: 'white' }}>Sign Out</button>
-          </div>
+        <div className="modal-divider" />
+        <div className="modal-actions-row">
+          <button onClick={() => setShowLogoutModal(false)}>Cancel</button>
+          <button className="modal-btn-danger" onClick={handleLogout}>Sign Out</button>
         </div>
       </Modal>
 

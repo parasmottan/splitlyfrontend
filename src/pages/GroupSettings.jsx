@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { IoChevronBack, IoMailOutline } from 'react-icons/io5';
 import { HiOutlineClipboardDocument } from 'react-icons/hi2';
 import useGroupStore from '../stores/groupStore';
 import useAuthStore from '../stores/authStore';
@@ -43,9 +43,7 @@ export default function GroupSettings() {
       await navigator.clipboard.writeText(g.inviteCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // fallback
-    }
+    } catch { }
   };
 
   const handleArchive = async () => {
@@ -74,7 +72,7 @@ export default function GroupSettings() {
       {/* Header */}
       <div className="header">
         <button className="header-back" onClick={() => navigate(-1)}>
-          <IoChevronBack /> Back
+          <IoChevronBack style={{ fontSize: '20px' }} /> Back
         </button>
         <span className="header-title">Group Settings</span>
         <div style={{ width: '60px' }}></div>
@@ -84,19 +82,19 @@ export default function GroupSettings() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 0 32px' }}>
         <Avatar name={g.name} size="xl" />
         <h2 style={{ fontSize: '22px', fontWeight: '700', marginTop: '12px' }}>{g.name}</h2>
-        <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+        <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>
           {g.type?.charAt(0).toUpperCase() + g.type?.slice(1)} · {g.members?.length} member{g.members?.length !== 1 ? 's' : ''}
         </p>
       </div>
 
       {/* Invite Code */}
-      <div className="card" style={{ padding: '16px', marginBottom: '16px' }}>
+      <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>INVITE CODE</p>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Invite Code</p>
             <p style={{ fontSize: '24px', fontWeight: '700', letterSpacing: '4px' }}>{g.inviteCode}</p>
           </div>
-          <button onClick={copyInviteCode} style={{ padding: '10px 16px', background: 'var(--blue-light)', borderRadius: 'var(--radius-md)', color: 'var(--blue)', fontWeight: '600', fontSize: '14px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button onClick={copyInviteCode} style={{ padding: '10px 16px', background: 'var(--blue-light)', borderRadius: '14px', color: 'var(--blue)', fontWeight: '600', fontSize: '15px', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', transition: 'transform 120ms ease-out' }}>
             <HiOutlineClipboardDocument />
             {copied ? 'Copied!' : 'Copy'}
           </button>
@@ -118,14 +116,14 @@ export default function GroupSettings() {
       {/* Members */}
       <h3 className="caption" style={{ marginBottom: '12px' }}>MEMBERS</h3>
       <div className="card" style={{ padding: '0 16px', marginBottom: '24px' }}>
-        {g.members?.map((member, i) => {
+        {g.members?.map((member) => {
           const m = member.user;
           return (
             <div key={m._id} className="form-row">
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <Avatar name={m.name} size="sm" />
                 <div>
-                  <p style={{ fontWeight: '500', fontSize: '16px' }}>
+                  <p style={{ fontWeight: '500', fontSize: '17px' }}>
                     {m._id === user?._id ? 'You' : m.name}
                   </p>
                   <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{m.email}</p>
@@ -142,7 +140,7 @@ export default function GroupSettings() {
       {/* Invite by Email */}
       <h3 className="caption" style={{ marginBottom: '12px' }}>INVITE BY EMAIL</h3>
       <div className="card" style={{ padding: '20px', marginBottom: '24px' }}>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+        <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.4' }}>
           Add members by entering their email addresses. If they don't have an account, they'll receive an invite link.
         </p>
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -150,7 +148,8 @@ export default function GroupSettings() {
             type="email"
             placeholder="friend@example.com"
             id="invite-email-input"
-            style={{ flex: 1, padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--gray-200)', background: 'var(--gray-50)', outline: 'none' }}
+            className="form-input"
+            style={{ flex: 1 }}
           />
           <button
             onClick={async () => {
@@ -160,7 +159,7 @@ export default function GroupSettings() {
                 try {
                   await inviteService.sendInvites(id, [email]);
                   input.value = '';
-                  fetchGroup(id); // Reload to show added/pending
+                  fetchGroup(id);
                   setPendingInvites(await inviteService.getPendingInvites(id));
                 } catch (err) {
                   alert(err.response?.data?.message || 'Failed to send invite');
@@ -183,12 +182,12 @@ export default function GroupSettings() {
             {pendingInvites.map((invite) => (
               <div key={invite._id} className="form-row">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
-                    ✉️
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--gray-100)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <IoMailOutline style={{ fontSize: '16px', color: 'var(--text-secondary)' }} />
                   </div>
                   <div>
                     <p style={{ fontWeight: '500', fontSize: '15px' }}>{invite.invitedEmail}</p>
-                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Expires: {new Date(invite.expiresAt).toLocaleDateString()}</p>
+                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Expires: {new Date(invite.expiresAt).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <button
@@ -198,7 +197,7 @@ export default function GroupSettings() {
                       setPendingInvites(pendingInvites.filter(i => i._id !== invite._id));
                     }
                   }}
-                  style={{ color: 'var(--red)', fontSize: '13px', border: 'none', background: 'none', fontWeight: '600', cursor: 'pointer' }}
+                  style={{ color: 'var(--red)', fontSize: '14px', border: 'none', background: 'none', fontWeight: '600', cursor: 'pointer' }}
                 >
                   Cancel
                 </button>
@@ -227,35 +226,33 @@ export default function GroupSettings() {
         )}
       </div>
 
-      {/* Delete Modal */}
+      {/* Delete Modal – iOS Alert */}
       <Modal
         show={showDeleteModal}
-        icon="🗑️"
         title="Delete Group?"
         message="This will permanently delete the group and all expenses. This action cannot be undone."
         onClose={() => setShowDeleteModal(false)}
+        variant="alert"
       >
-        <div className="modal-actions">
-          <div className="modal-actions-row">
-            <button onClick={() => setShowDeleteModal(false)} style={{ background: 'var(--gray-100)', color: 'var(--text-primary)' }}>Cancel</button>
-            <button onClick={handleDelete} style={{ background: 'var(--red)', color: 'white' }}>Delete</button>
-          </div>
+        <div className="modal-divider" />
+        <div className="modal-actions-row">
+          <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+          <button className="modal-btn-danger" onClick={handleDelete}>Delete</button>
         </div>
       </Modal>
 
-      {/* Leave Modal */}
+      {/* Leave Modal – iOS Alert */}
       <Modal
         show={showLeaveModal}
-        icon="👋"
         title="Leave Group?"
         message="You'll lose access to this group and its expenses. You can join again with the invite code."
         onClose={() => setShowLeaveModal(false)}
+        variant="alert"
       >
-        <div className="modal-actions">
-          <div className="modal-actions-row">
-            <button onClick={() => setShowLeaveModal(false)} style={{ background: 'var(--gray-100)', color: 'var(--text-primary)' }}>Cancel</button>
-            <button onClick={handleLeave} style={{ background: 'var(--red)', color: 'white' }}>Leave</button>
-          </div>
+        <div className="modal-divider" />
+        <div className="modal-actions-row">
+          <button onClick={() => setShowLeaveModal(false)}>Cancel</button>
+          <button className="modal-btn-danger" onClick={handleLeave}>Leave</button>
         </div>
       </Modal>
     </div>

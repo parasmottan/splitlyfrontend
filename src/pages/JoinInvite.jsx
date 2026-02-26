@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { IoMailOutline, IoChevronBack, IoNotificationsOutline } from 'react-icons/io5';
+import { IoChevronBack, IoPeopleOutline } from 'react-icons/io5';
 import inviteService from '../services/inviteService';
 import useAuthStore from '../stores/authStore';
 
 export default function JoinInvite() {
   const { token } = useParams();
   const navigate = useNavigate();
-  const { user, login } = useAuthStore();
+  const { user } = useAuthStore();
 
   const [inviteData, setInviteData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,7 +30,6 @@ export default function JoinInvite() {
 
   const handleJoin = async () => {
     if (!user) {
-      // Redirect to login/register with return path
       navigate('/login', { state: { from: `/join/${token}` } });
       return;
     }
@@ -52,28 +51,28 @@ export default function JoinInvite() {
     <div className="page page-white" style={{ display: 'flex', flexDirection: 'column', padding: '0 20px', minHeight: '100dvh' }}>
       <div className="header">
         <button className="header-back" onClick={() => navigate('/groups')}>
-          <IoChevronBack /> Groups
+          <IoChevronBack style={{ fontSize: '20px' }} /> Groups
         </button>
       </div>
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'var(--blue-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '32px' }}>
-          <IoNotificationsOutline style={{ fontSize: '32px', color: 'var(--blue)' }} />
+          <IoPeopleOutline style={{ fontSize: '32px', color: 'var(--blue)' }} />
         </div>
 
         {error ? (
           <>
             <h1 className="title-large" style={{ color: 'var(--red)', marginBottom: '12px' }}>Invite Error</h1>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '48px' }}>{error}</p>
-            <button className="btn-primary" onClick={() => navigate('/groups')}>Go to My Groups</button>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '48px', fontSize: '17px' }}>{error}</p>
+            <button className="btn-primary" onClick={() => navigate('/groups')} style={{ maxWidth: '300px' }}>Go to My Groups</button>
           </>
         ) : (
           <>
             <h1 className="title-large" style={{ marginBottom: '12px' }}>Group Invite</h1>
-            <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '16px' }}>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '17px' }}>
               You've been invited to join
             </p>
-            <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--blue)', marginBottom: '48px' }}>{inviteData.groupName}</h2>
+            <h2 style={{ fontSize: '24px', fontWeight: '700', color: 'var(--blue)', marginBottom: '48px' }}>{inviteData.groupName}</h2>
 
             <div style={{ width: '100%', maxWidth: '300px' }}>
               <button

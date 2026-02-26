@@ -6,7 +6,7 @@ import useGroupStore from '../stores/groupStore';
 
 export default function JoinGroup() {
   const navigate = useNavigate();
-  const { joinGroup, loading, error } = useGroupStore();
+  const { joinGroup, loading } = useGroupStore();
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
   const [joinError, setJoinError] = useState('');
@@ -18,7 +18,6 @@ export default function JoinGroup() {
     setCode(newCode);
     setJoinError('');
 
-    // Auto-focus next input
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -33,7 +32,6 @@ export default function JoinGroup() {
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      // Try to extract a 6 character code from pasted text
       const match = text.match(/[A-Z0-9]{6}/i);
       if (match) {
         const chars = match[0].toUpperCase().split('');
@@ -65,7 +63,7 @@ export default function JoinGroup() {
       {/* Header */}
       <div className="header">
         <button className="header-back" onClick={() => navigate(-1)}>
-          <IoChevronBack /> Back
+          <IoChevronBack style={{ fontSize: '20px' }} /> Back
         </button>
         <span className="header-title">Join Group</span>
         <div style={{ width: '60px' }}></div>
@@ -74,12 +72,12 @@ export default function JoinGroup() {
       <h1 className="title-large" style={{ textAlign: 'center', marginTop: '24px', marginBottom: '12px' }}>
         Enter Invite Code
       </h1>
-      <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '16px', lineHeight: '1.5', marginBottom: '32px', maxWidth: '300px', margin: '0 auto 32px' }}>
+      <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '17px', lineHeight: '1.5', marginBottom: '32px', maxWidth: '300px', margin: '0 auto 32px' }}>
         Ask your friend for the 6-digit code to join their group.
       </p>
 
       {/* Code Input */}
-      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '8px', padding: '16px', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: '2px solid var(--blue-light)' }}>
+      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '8px', padding: '16px', background: 'var(--gray-50)', borderRadius: '16px', border: '2px solid var(--blue-light)' }}>
         {code.map((char, i) => (
           <React.Fragment key={i}>
             <input
@@ -96,10 +94,12 @@ export default function JoinGroup() {
                 fontSize: '24px',
                 fontWeight: '600',
                 border: 'none',
-                borderBottom: '2px solid var(--gray-300)',
+                borderBottom: `2px solid ${char ? 'var(--blue)' : 'var(--gray-300)'}`,
                 background: 'transparent',
                 color: 'var(--text-primary)',
-                letterSpacing: '2px'
+                letterSpacing: '2px',
+                outline: 'none',
+                transition: 'border-color 200ms ease'
               }}
             />
             {i === 2 && (
@@ -110,20 +110,20 @@ export default function JoinGroup() {
       </div>
 
       {joinError && (
-        <p style={{ textAlign: 'center', color: 'var(--red)', fontSize: '14px', marginTop: '8px' }}>{joinError}</p>
+        <p style={{ textAlign: 'center', color: 'var(--red)', fontSize: '15px', marginTop: '8px' }}>{joinError}</p>
       )}
 
       {/* OR divider */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '24px 0' }}>
-        <div style={{ flex: 1, height: '1px', background: 'var(--gray-200)' }}></div>
-        <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>OR</span>
-        <div style={{ flex: 1, height: '1px', background: 'var(--gray-200)' }}></div>
+        <div style={{ flex: 1, height: '0.5px', background: 'var(--gray-300)' }}></div>
+        <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '500' }}>OR</span>
+        <div style={{ flex: 1, height: '0.5px', background: 'var(--gray-300)' }}></div>
       </div>
 
       {/* Paste Invite Link */}
       <button
         onClick={handlePaste}
-        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '14px', background: 'var(--gray-50)', borderRadius: 'var(--radius-lg)', border: 'none', color: 'var(--blue)', fontSize: '16px', fontWeight: '600', cursor: 'pointer' }}
+        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '14px', background: 'var(--gray-50)', borderRadius: '16px', border: 'none', color: 'var(--blue)', fontSize: '17px', fontWeight: '600', cursor: 'pointer', transition: 'transform 120ms ease-out' }}
       >
         <HiOutlineClipboardDocument style={{ fontSize: '20px' }} />
         Paste Invite Link
