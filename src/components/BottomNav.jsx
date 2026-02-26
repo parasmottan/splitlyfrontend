@@ -1,17 +1,14 @@
 import React, { memo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { HiOutlineUserGroup, HiUserGroup } from 'react-icons/hi2';
-import { IoTimeOutline, IoTime } from 'react-icons/io5';
-import { HiOutlinePlus } from 'react-icons/hi2';
-import { IoBarChartOutline, IoBarChart } from 'react-icons/io5';
-import { IoPersonOutline, IoPerson } from 'react-icons/io5';
+import { HiOutlineUserGroup, HiUserGroup, HiOutlinePlus } from 'react-icons/hi2';
+import { IoHomeOutline, IoHome, IoReceiptOutline, IoReceipt, IoPersonOutline, IoPerson } from 'react-icons/io5';
 
 const tabs = [
+  { key: 'home', label: 'Home', path: '/', icon: IoHomeOutline, activeIcon: IoHome },
   { key: 'groups', label: 'Groups', path: '/groups', icon: HiOutlineUserGroup, activeIcon: HiUserGroup },
-  { key: 'activity', label: 'Activity', path: '/activity', icon: IoTimeOutline, activeIcon: IoTime },
   { key: 'add', label: '', path: null, fab: true },
-  { key: 'insights', label: 'Insights', path: '/insights', icon: IoBarChartOutline, activeIcon: IoBarChart },
-  { key: 'account', label: 'Profile', path: '/account', icon: IoPersonOutline, activeIcon: IoPerson },
+  { key: 'activity', label: 'Activity', path: '/activity', icon: IoReceiptOutline, activeIcon: IoReceipt },
+  { key: 'account', label: 'Account', path: '/account', icon: IoPersonOutline, activeIcon: IoPerson },
 ];
 
 function BottomNav() {
