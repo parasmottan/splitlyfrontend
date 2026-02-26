@@ -399,7 +399,7 @@ export default function Groups() {
       </button>
 
       {/* ═══════════════ BOTTOM NAV ═══════════════ */}
-      <BottomNav />
+      <BottomNav showFab={false} />
     </div>
   );
 }

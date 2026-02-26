@@ -11,7 +11,7 @@ const tabs = [
   { key: 'account', label: 'Account', path: '/account', icon: IoPersonOutline, activeIcon: IoPerson },
 ];
 
-function BottomNav() {
+function BottomNav({ showFab = true }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,12 +21,10 @@ function BottomNav() {
   }, [location.pathname]);
 
   const handleAdd = useCallback(() => {
-    // If we're inside a group view with an ID (e.g. /groups/123), go to add expense
     const match = location.pathname.match(/^\/groups\/([^\/]+)/);
     if (match && match[1] && match[1] !== 'new') {
       navigate(`/groups/${match[1]}/add-expense`);
     } else {
-      // Default fallback
       navigate('/groups');
     }
   }, [location.pathname, navigate]);
@@ -35,6 +33,7 @@ function BottomNav() {
     <nav className="bottom-nav">
       {tabs.map(tab => {
         if (tab.fab) {
+          if (!showFab) return null;
           return (
             <button
               key={tab.key}
