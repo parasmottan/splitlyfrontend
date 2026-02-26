@@ -10,16 +10,13 @@ import BottomNav from '../components/BottomNav';
 import Skeleton from '../components/Skeleton';
 
 /* ────────────────────────────────────────────
-   Memoised member row to prevent list re-renders
+   Memoised member row – matches PNG exactly
    ──────────────────────────────────────────── */
-const MemberRow = memo(function MemberRow({
-  member, isYou, currSymbol, isLast
-}) {
+const MemberRow = memo(function MemberRow({ member, isYou, currSymbol, isLast }) {
   const m = member.user;
   const net = member.net ?? 0;
   const subtext = member.subtext || '';
 
-  /* amount display */
   let amountStr, amountColor;
   if (net > 0.01) {
     amountStr = `+ ${currSymbol}${Math.abs(net).toFixed(0)}`;
@@ -33,18 +30,23 @@ const MemberRow = memo(function MemberRow({
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      {/* Avatar (fixed left) */}
-      <div style={{ marginRight: '14px', position: 'relative', flexShrink: 0, padding: '12px 0' }}>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      padding: '14px 16px',
+      borderBottom: isLast ? 'none' : '0.5px solid rgba(0,0,0,0.06)',
+    }}>
+      {/* Avatar */}
+      <div style={{ marginRight: '12px', position: 'relative', flexShrink: 0 }}>
         <Avatar name={m.name} />
         {isYou && (
           <div style={{
-            position: 'absolute', bottom: '10px', right: '-4px',
-            width: '16px', height: '16px', borderRadius: '50%',
-            background: '#007AFF', border: '2px solid white',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
+            position: 'absolute', bottom: '-1px', right: '-3px',
+            width: '18px', height: '18px', borderRadius: '50%',
+            background: '#007AFF', border: '2.5px solid white',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <svg width="8" height="8" fill="none" viewBox="0 0 24 24">
+            <svg width="9" height="9" fill="none" viewBox="0 0 24 24">
               <path d="M5 13l4 4L19 7" stroke="white" strokeWidth="3.5"
                 strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -52,41 +54,31 @@ const MemberRow = memo(function MemberRow({
         )}
       </div>
 
-      {/* Right Content Area with Border (Text baseline alignment) */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        padding: '12px 0',
-        minWidth: 0,
-        borderBottom: isLast ? 'none' : '0.5px solid rgba(0,0,0,0.08)'
-      }}>
-        {/* Name + subtext */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{
-            fontSize: '17px', fontWeight: '600', lineHeight: '22px',
-            color: '#000', margin: 0
-          }}>
-            {isYou ? 'You' : m.name}
-          </p>
-          {subtext && (
-            <p style={{
-              fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
-              lineHeight: '18px'
-            }}>
-              {subtext}
-            </p>
-          )}
-        </div>
-
-        {/* Amount */}
-        <span style={{
-          fontSize: '17px', fontWeight: '700', color: amountColor,
-          flexShrink: 0, marginLeft: '8px', letterSpacing: '-0.2px'
+      {/* Name + subtext */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{
+          fontSize: '17px', fontWeight: '600', lineHeight: '22px',
+          color: '#000', margin: 0,
         }}>
-          {amountStr}
-        </span>
+          {isYou ? 'You' : m.name}
+        </p>
+        {subtext && (
+          <p style={{
+            fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
+            lineHeight: '18px',
+          }}>
+            {subtext}
+          </p>
+        )}
       </div>
+
+      {/* Amount */}
+      <span style={{
+        fontSize: '17px', fontWeight: '700', color: amountColor,
+        flexShrink: 0, marginLeft: '12px', letterSpacing: '-0.3px',
+      }}>
+        {amountStr}
+      </span>
     </div>
   );
 });
@@ -132,7 +124,7 @@ export default function GroupDashboard() {
 
   const currSymbol = g?.currencySymbol || '\u20B9';
 
-  /* ── Derive pending settlement (first pending transfer) ── */
+  /* ── Derive pending settlement ── */
   const pendingTransfer = g?.pendingSettlements?.[0] || null;
 
   /* ── Build member rows with subtexts ── */
@@ -157,13 +149,17 @@ export default function GroupDashboard() {
   }) || [];
 
   return (
-    <div className="page" style={{
+    <div style={{
       background: '#F2F2F7',
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100dvh'
+      minHeight: '100dvh',
+      maxWidth: '430px',
+      margin: '0 auto',
+      position: 'relative',
     }}>
-      {/* ═════════ HEADER ═════════ */}
+
+      {/* ═══════════════ HEADER ═══════════════ */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -173,7 +169,7 @@ export default function GroupDashboard() {
         background: '#F2F2F7',
         position: 'sticky',
         top: 0,
-        zIndex: 100
+        zIndex: 10,
       }}>
         {/* Left – back */}
         <button
@@ -181,11 +177,11 @@ export default function GroupDashboard() {
           style={{
             display: 'flex', alignItems: 'center', gap: '2px',
             background: 'none', border: 'none', cursor: 'pointer',
-            padding: '4px 0', color: '#007AFF', fontSize: '17px',
-            fontWeight: '400', minWidth: '60px'
+            padding: 0, color: '#007AFF', fontSize: '17px',
+            fontWeight: '400', minWidth: '60px',
           }}
         >
-          <IoChevronBack style={{ fontSize: '22px' }} />
+          <IoChevronBack style={{ fontSize: '24px' }} />
           <span>Back</span>
         </button>
 
@@ -194,7 +190,7 @@ export default function GroupDashboard() {
           position: 'absolute', left: '50%', transform: 'translateX(-50%)',
           fontSize: '17px', fontWeight: '600', color: '#000',
           margin: 0, maxWidth: '55%', overflow: 'hidden',
-          textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+          textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {g?.name || ''}
         </h1>
@@ -204,106 +200,112 @@ export default function GroupDashboard() {
           onClick={() => navigate(`/groups/${id}/settings`)}
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
-            padding: '4px', color: '#007AFF', display: 'flex',
-            alignItems: 'center', justifyContent: 'center'
+            padding: 0, color: '#007AFF', display: 'flex',
+            alignItems: 'center', justifyContent: 'center',
           }}
         >
-          <IoSettingsOutline style={{ fontSize: '22px' }} />
+          <IoSettingsOutline style={{ fontSize: '24px' }} />
         </button>
       </div>
 
-      {/* ═════════ SCROLLABLE BODY ═════════ */}
+      {/* ═══════════════ SCROLLABLE CONTENT ═══════════════ */}
       <div style={{
         flex: 1,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
-        padding: '0 16px',
-        paddingBottom: '100px'
+        padding: '0 20px',
+        paddingBottom: '100px',
       }}>
-        {/* ── Skeleton ── */}
+
+        {/* ── Skeleton while loading ── */}
         {loading && !g && (
           <div>
-            <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
+            <div style={{ textAlign: 'center', padding: '48px 0 24px' }}>
               <Skeleton width="100px" height="14px" style={{ margin: '0 auto 12px' }} />
-              <Skeleton width="200px" height="40px" style={{ margin: '0 auto 8px' }} />
-              <Skeleton width="160px" height="15px" style={{ margin: '0 auto' }} />
+              <Skeleton width="220px" height="44px" style={{ margin: '0 auto 10px' }} />
+              <Skeleton width="180px" height="16px" style={{ margin: '0 auto' }} />
             </div>
-            <Skeleton height="64px" borderRadius="20px" style={{ marginBottom: '32px' }} />
-            <Skeleton width="140px" height="20px" style={{ marginBottom: '16px' }} />
-            <Skeleton height="280px" borderRadius="16px" />
+            <Skeleton height="68px" borderRadius="24px" style={{ marginBottom: '36px' }} />
+            <Skeleton width="160px" height="22px" style={{ marginBottom: '16px' }} />
+            <Skeleton height="300px" borderRadius="16px" />
           </div>
         )}
 
         {/* ── Real content ── */}
         {g && (
           <>
-            {/* ═════ BALANCE SECTION (no card) ═════ */}
-            <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
+            {/* ═══ YOUR BALANCE (floating text, no card) ═══ */}
+            <div style={{ textAlign: 'center', padding: '44px 0 8px' }}>
+
+              {/* "Your balance" label – green tint */}
               <p style={{
-                fontSize: '15px', color: '#8E8E93', fontWeight: '400',
-                margin: '0 0 4px', lineHeight: '20px'
+                fontSize: '16px', color: '#34C759', fontWeight: '500',
+                margin: '0 0 10px', lineHeight: '20px',
               }}>
                 Your balance
               </p>
 
+              {/* Big balance amount */}
               {(g.balance?.youOwe > 0) ? (
                 <p style={{
-                  fontSize: '36px', fontWeight: '700', color: '#FF3B30',
-                  margin: '0 0 4px', lineHeight: '1.1', letterSpacing: '-0.5px'
+                  fontSize: '40px', fontWeight: '700', color: '#FF3B30',
+                  margin: '0 0 10px', lineHeight: '1.05', letterSpacing: '-0.8px',
                 }}>
                   You owe {currSymbol}{g.balance.youOwe.toFixed(0)}
                 </p>
               ) : (g.balance?.youAreOwed > 0) ? (
                 <p style={{
-                  fontSize: '36px', fontWeight: '700', color: '#34C759',
-                  margin: '0 0 4px', lineHeight: '1.1', letterSpacing: '-0.5px'
+                  fontSize: '40px', fontWeight: '700', color: '#34C759',
+                  margin: '0 0 10px', lineHeight: '1.05', letterSpacing: '-0.8px',
                 }}>
                   You are owed {currSymbol}{g.balance.youAreOwed.toFixed(0)}
                 </p>
               ) : (
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: '6px', margin: '0 0 4px'
+                  gap: '8px', margin: '0 0 10px',
                 }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <circle cx="14" cy="14" r="14" fill="#34C759" />
                     <path d="M8 14.5l3.5 3.5L20 10" stroke="white" strokeWidth="2.5"
                       strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span style={{ fontSize: '20px', fontWeight: '700', color: '#34C759' }}>
+                  <span style={{ fontSize: '22px', fontWeight: '700', color: '#34C759' }}>
                     All Settled
                   </span>
                 </div>
               )}
 
+              {/* Total group spend */}
               <p style={{
                 fontSize: '15px', color: '#8E8E93', fontWeight: '400',
-                margin: 0, lineHeight: '20px'
+                margin: 0, lineHeight: '20px',
               }}>
-                Total group spend {currSymbol}{(g.balance?.totalSpend || 0).toLocaleString('en-IN')}
+                Total group spend <span style={{ color: '#1C1C1E', fontWeight: '600' }}>
+                  {currSymbol}{(g.balance?.totalSpend || 0).toLocaleString('en-IN')}
+                </span>
               </p>
             </div>
 
-            {/* ═════ PENDING SETTLEMENT CARD ═════ */}
+            {/* ═══ PENDING SETTLEMENT CARD ═══ */}
             {(g.balance?.youOwe > 0 || pendingTransfer) && (
               <div style={{
-                background: 'rgba(0,122,255,0.08)',
-                borderRadius: '20px',
-                padding: '16px',
+                background: '#EBF2FF',
+                borderRadius: '24px',
+                padding: '14px 16px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                marginBottom: '32px',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+                margin: '28px 0 0',
               }}>
-                {/* Currency icon */}
+                {/* Currency circle */}
                 <div style={{
-                  width: '40px', height: '40px', borderRadius: '50%',
-                  background: 'rgba(0,122,255,0.12)',
+                  width: '44px', height: '44px', borderRadius: '50%',
+                  background: 'rgba(0,122,255,0.10)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0
+                  flexShrink: 0,
                 }}>
-                  <span style={{ fontSize: '18px', fontWeight: '700', color: '#007AFF' }}>
+                  <span style={{ fontSize: '20px', fontWeight: '700', color: '#007AFF' }}>
                     {currSymbol}
                   </span>
                 </div>
@@ -311,29 +313,30 @@ export default function GroupDashboard() {
                 {/* Text */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{
-                    fontSize: '15px', fontWeight: '600', color: '#000',
-                    margin: 0, lineHeight: '20px'
+                    fontSize: '15px', fontWeight: '600', color: '#1C1C1E',
+                    margin: 0, lineHeight: '20px',
                   }}>
                     {currSymbol}{(pendingTransfer?.amount || g.balance?.youOwe || 0).toFixed(0)} pending settlement
                   </p>
                   <p style={{
-                    fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
-                    lineHeight: '18px'
+                    fontSize: '13px', color: '#8E8E93', margin: '1px 0 0',
+                    lineHeight: '18px',
                   }}>
                     {pendingTransfer ? `From ${pendingTransfer.from?.name?.split(' ')[0] || 'member'}` : 'Tap to settle'}
                   </p>
                 </div>
 
-                {/* Settle Now button */}
+                {/* Settle Now pill */}
                 <button
                   onClick={() => navigate(`/groups/${id}/settle`)}
                   style={{
                     background: '#007AFF', color: 'white',
-                    fontSize: '14px', fontWeight: '600',
-                    padding: '0 16px', height: '36px', borderRadius: '20px',
+                    fontSize: '15px', fontWeight: '600',
+                    padding: '0 20px', height: '36px', borderRadius: '18px',
                     border: 'none', cursor: 'pointer', flexShrink: 0,
                     whiteSpace: 'nowrap',
-                    transition: 'transform 120ms ease-out'
+                    transition: 'transform 120ms ease-out',
+                    display: 'flex', alignItems: 'center',
                   }}
                 >
                   Settle Now
@@ -341,19 +344,19 @@ export default function GroupDashboard() {
               </div>
             )}
 
-            {/* ═════ MEMBER BALANCES ═════ */}
+            {/* ═══ MEMBER BALANCES ═══ */}
             <h2 style={{
-              fontSize: '22px', fontWeight: '700', color: '#000',
-              margin: '0 0 16px', letterSpacing: '-0.3px'
+              fontSize: '22px', fontWeight: '700', color: '#1C1C1E',
+              margin: '36px 0 14px', letterSpacing: '-0.3px', lineHeight: '28px',
             }}>
               Member Balances
             </h2>
 
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '20px',
-              padding: '0 16px',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04)'
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 0.5px 1px rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.03)',
             }}>
               {memberRows.map((member, idx) => (
                 <MemberRow
@@ -366,16 +369,16 @@ export default function GroupDashboard() {
               ))}
             </div>
 
-            {/* Spacer before bottom nav */}
+            {/* Spacer */}
             <div style={{ height: '24px' }} />
           </>
         )}
       </div>
 
-      {/* ═════════ BOTTOM NAV ═════════ */}
+      {/* ═══════════════ BOTTOM NAV ═══════════════ */}
       <BottomNav />
 
-      {/* ═════════ REMINDER MODAL ═════════ */}
+      {/* ═══════════════ REMINDER MODAL ═══════════════ */}
       {remindModal && (
         <Modal
           show={!!remindModal}
@@ -394,7 +397,7 @@ export default function GroupDashboard() {
               style={{
                 padding: '12px 16px', textAlign: 'left',
                 background: '#F2F2F7', color: '#000', border: 'none',
-                borderRadius: '12px', fontSize: '15px', cursor: 'pointer'
+                borderRadius: '12px', fontSize: '15px', cursor: 'pointer',
               }}
             >
               "Hey! Just a reminder about the payment."
@@ -406,7 +409,7 @@ export default function GroupDashboard() {
               style={{
                 padding: '12px 16px', textAlign: 'left',
                 background: '#F2F2F7', color: '#000', border: 'none',
-                borderRadius: '12px', fontSize: '15px', cursor: 'pointer'
+                borderRadius: '12px', fontSize: '15px', cursor: 'pointer',
               }}
             >
               "Don't forget to settle up!"
@@ -416,7 +419,7 @@ export default function GroupDashboard() {
               <label style={{
                 fontSize: '13px', fontWeight: '600', color: '#8E8E93',
                 display: 'block', marginBottom: '8px',
-                textTransform: 'uppercase', letterSpacing: '0.5px'
+                textTransform: 'uppercase', letterSpacing: '0.5px',
               }}>
                 Custom Message
               </label>
@@ -429,7 +432,7 @@ export default function GroupDashboard() {
                   border: '1px solid rgba(0,0,0,0.08)',
                   background: '#F2F2F7', minHeight: '80px', outline: 'none',
                   fontSize: '15px', fontFamily: 'inherit', resize: 'none',
-                  transition: 'border-color 200ms ease, box-shadow 200ms ease'
+                  transition: 'border-color 200ms ease, box-shadow 200ms ease',
                 }}
               />
             </div>
