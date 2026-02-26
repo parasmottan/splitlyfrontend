@@ -24,8 +24,15 @@ function BottomNav() {
   }, [location.pathname]);
 
   const handleAdd = useCallback(() => {
-    navigate('/get-started');
-  }, [navigate]);
+    // If we're inside a group view with an ID (e.g. /groups/123), go to add expense
+    const match = location.pathname.match(/^\/groups\/([^\/]+)/);
+    if (match && match[1] && match[1] !== 'new') {
+      navigate(`/groups/${match[1]}/add-expense`);
+    } else {
+      // Default fallback
+      navigate('/groups');
+    }
+  }, [location.pathname, navigate]);
 
   return (
     <nav className="bottom-nav">
@@ -34,7 +41,7 @@ function BottomNav() {
           return (
             <button
               key={tab.key}
-              className="nav-item"
+              className="nav-item-fab-wrapper"
               onClick={handleAdd}
             >
               <div className="nav-item-fab">
