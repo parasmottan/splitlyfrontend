@@ -33,19 +33,14 @@ const MemberRow = memo(function MemberRow({
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      padding: '14px 0',
-      borderBottom: isLast ? 'none' : '0.5px solid rgba(0,0,0,0.06)'
-    }}>
-      {/* Avatar */}
-      <div style={{ marginRight: '12px', position: 'relative', flexShrink: 0 }}>
-        <Avatar name={m.name} size="sm" />
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      {/* Avatar (fixed left) */}
+      <div style={{ marginRight: '14px', position: 'relative', flexShrink: 0, padding: '12px 0' }}>
+        <Avatar name={m.name} />
         {isYou && (
           <div style={{
-            position: 'absolute', bottom: '-2px', right: '-2px',
-            width: '14px', height: '14px', borderRadius: '50%',
+            position: 'absolute', bottom: '10px', right: '-4px',
+            width: '16px', height: '16px', borderRadius: '50%',
             background: '#007AFF', border: '2px solid white',
             display: 'flex', alignItems: 'center', justifyContent: 'center'
           }}>
@@ -57,31 +52,41 @@ const MemberRow = memo(function MemberRow({
         )}
       </div>
 
-      {/* Name + subtext */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p style={{
-          fontSize: '17px', fontWeight: '600', lineHeight: '22px',
-          color: '#000', margin: 0
-        }}>
-          {isYou ? 'You' : m.name}
-        </p>
-        {subtext && (
-          <p style={{
-            fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
-            lineHeight: '18px'
-          }}>
-            {subtext}
-          </p>
-        )}
-      </div>
-
-      {/* Amount */}
-      <span style={{
-        fontSize: '17px', fontWeight: '700', color: amountColor,
-        flexShrink: 0, marginLeft: '8px', letterSpacing: '-0.2px'
+      {/* Right Content Area with Border (Text baseline alignment) */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        padding: '12px 0',
+        minWidth: 0,
+        borderBottom: isLast ? 'none' : '0.5px solid rgba(0,0,0,0.08)'
       }}>
-        {amountStr}
-      </span>
+        {/* Name + subtext */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            fontSize: '17px', fontWeight: '600', lineHeight: '22px',
+            color: '#000', margin: 0
+          }}>
+            {isYou ? 'You' : m.name}
+          </p>
+          {subtext && (
+            <p style={{
+              fontSize: '13px', color: '#8E8E93', margin: '2px 0 0',
+              lineHeight: '18px'
+            }}>
+              {subtext}
+            </p>
+          )}
+        </div>
+
+        {/* Amount */}
+        <span style={{
+          fontSize: '17px', fontWeight: '700', color: amountColor,
+          flexShrink: 0, marginLeft: '8px', letterSpacing: '-0.2px'
+        }}>
+          {amountStr}
+        </span>
+      </div>
     </div>
   );
 });
@@ -212,7 +217,7 @@ export default function GroupDashboard() {
         flex: 1,
         overflowY: 'auto',
         WebkitOverflowScrolling: 'touch',
-        padding: '0 20px',
+        padding: '0 16px',
         paddingBottom: '100px'
       }}>
         {/* ── Skeleton ── */}
@@ -233,10 +238,10 @@ export default function GroupDashboard() {
         {g && (
           <>
             {/* ═════ BALANCE SECTION (no card) ═════ */}
-            <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
+            <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
               <p style={{
                 fontSize: '15px', color: '#8E8E93', fontWeight: '400',
-                margin: '0 0 8px', lineHeight: '20px'
+                margin: '0 0 4px', lineHeight: '20px'
               }}>
                 Your balance
               </p>
@@ -244,21 +249,21 @@ export default function GroupDashboard() {
               {(g.balance?.youOwe > 0) ? (
                 <p style={{
                   fontSize: '36px', fontWeight: '700', color: '#FF3B30',
-                  margin: '0 0 8px', lineHeight: '1.1', letterSpacing: '-0.5px'
+                  margin: '0 0 4px', lineHeight: '1.1', letterSpacing: '-0.5px'
                 }}>
                   You owe {currSymbol}{g.balance.youOwe.toFixed(0)}
                 </p>
               ) : (g.balance?.youAreOwed > 0) ? (
                 <p style={{
                   fontSize: '36px', fontWeight: '700', color: '#34C759',
-                  margin: '0 0 8px', lineHeight: '1.1', letterSpacing: '-0.5px'
+                  margin: '0 0 4px', lineHeight: '1.1', letterSpacing: '-0.5px'
                 }}>
                   You are owed {currSymbol}{g.balance.youAreOwed.toFixed(0)}
                 </p>
               ) : (
                 <div style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  gap: '8px', margin: '0 0 8px'
+                  gap: '6px', margin: '0 0 4px'
                 }}>
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                     <circle cx="14" cy="14" r="14" fill="#34C759" />
@@ -284,7 +289,7 @@ export default function GroupDashboard() {
               <div style={{
                 background: 'rgba(0,122,255,0.08)',
                 borderRadius: '20px',
-                padding: '16px 20px',
+                padding: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
@@ -325,7 +330,7 @@ export default function GroupDashboard() {
                   style={{
                     background: '#007AFF', color: 'white',
                     fontSize: '14px', fontWeight: '600',
-                    padding: '8px 16px', borderRadius: '20px',
+                    padding: '0 16px', height: '36px', borderRadius: '20px',
                     border: 'none', cursor: 'pointer', flexShrink: 0,
                     whiteSpace: 'nowrap',
                     transition: 'transform 120ms ease-out'
@@ -346,8 +351,8 @@ export default function GroupDashboard() {
 
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '16px',
-              padding: '4px 20px',
+              borderRadius: '20px',
+              padding: '0 16px',
               boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04)'
             }}>
               {memberRows.map((member, idx) => (
