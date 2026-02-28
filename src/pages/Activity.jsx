@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import useAuthStore from '../stores/authStore';
 import BottomNav from '../components/BottomNav';
 import Skeleton from '../components/Skeleton';
 
 export default function Activity() {
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const [activityData, setActivityData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -23,20 +25,36 @@ export default function Activity() {
     fetchActivity();
   }, []);
 
-  const dateKeys = Object.keys(activityData);
-
   const getCategoryEmoji = (category) => {
-    const map = { food: '🍕', transport: '🚗', groceries: '🛒', entertainment: '🎬', utilities: '💡', rent: '🏠', travel: '✈️', shopping: '🛍️' };
+    const map = { food: '🍕', transport: '🚗', groceries: '🛒', entertainment: '🎬', utilities: '💡', rent: '🏠', travel: '✈️', shopping: '🛍️', drinks: '🍺', other: '💸' };
     return map[category] || '💸';
   };
+
+  // Client-side filter per tab:
+  // 'groups' = items that have a groupId/groupName
+  // 'friends' = items that don't (direct friend splits)
+  const filteredData = Object.fromEntries(
+    Object.entries(activityData)
+      .map(([date, items]) => {
+        let filtered = items;
+        if (activeTab === 'groups') filtered = items.filter(i => i.groupId || i.groupName);
+        if (activeTab === 'friends') filtered = items.filter(i => !i.groupId && !i.groupName);
+        return [date, filtered];
+      })
+      .filter(([, items]) => items.length > 0)
+  );
+
+  const dateKeys = Object.keys(filteredData);
+  const allDateKeys = Object.keys(activityData);
+  const totalActivityCount = allDateKeys.reduce((sum, k) => sum + activityData[k].length, 0);
 
   return (
     <div style={{ background: 'var(--gray-50)', minHeight: '100dvh', maxWidth: '430px', margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ padding: '16px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#1C1C1E' }}>←</button>
+      <div style={{ padding: '16px 20px 0', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#1C1C1E' }}>←</button>
         <h1 style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: '15px', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', color: '#6347F5' }}>ACTIVITY</h1>
-        <button style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#1C1C1E' }}>⚙️</button>
+        <div style={{ width: '28px' }} />
       </div>
 
       <div style={{ padding: '0 20px 100px' }}>
@@ -99,7 +117,7 @@ export default function Activity() {
                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px',
                 boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
               }}
-              onClick={() => { }}
+              onClick={() => navigate('/groups')}
             >
               + Add Expense
             </button>
@@ -109,10 +127,10 @@ export default function Activity() {
         {dateKeys.map(dateKey => (
           <div key={dateKey} style={{ marginBottom: '28px' }}>
             <h3 style={{ fontSize: '12px', fontWeight: '600', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px' }}>
-              PENDING REQUESTS
+              {dateKey}
             </h3>
 
-            {activityData[dateKey].map(item => {
+            {filteredData[dateKey].map(item => {
               const isPositive = item.amount > 0;
               return (
                 <div key={item._id} style={{
@@ -139,7 +157,7 @@ export default function Activity() {
                   </div>
                   {item.amount !== 0 && (
                     <span style={{ fontSize: '17px', fontWeight: '700', color: isPositive ? '#34C759' : '#FF3B30', flexShrink: 0 }}>
-                      {isPositive ? '+' : '-'}₹{Math.abs(item.amount).toFixed(0)}
+                      {isPositive ? '+' : '-'}{item.currencySymbol || '₹'}{Math.abs(item.amount).toFixed(0)}
                     </span>
                   )}
                 </div>

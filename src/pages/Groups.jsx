@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, memo, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoSearch, IoClose } from 'react-icons/io5';
+import { IoSearch } from 'react-icons/io5';
 import useGroupStore from '../stores/groupStore';
 import useAuthStore from '../stores/authStore';
 import Avatar from '../components/Avatar';
@@ -13,12 +13,20 @@ const MemberAvatarStack = memo(function MemberAvatarStack({ members, max = 3 }) 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {shown.map((m, i) => (
-        <div key={m.user?._id || i} style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid white', marginLeft: i === 0 ? 0 : '-7px', zIndex: max - i, position: 'relative', overflow: 'hidden' }}>
+        <div key={m.user?._id || i} style={{
+          width: '24px', height: '24px', borderRadius: '50%',
+          border: '2px solid white', marginLeft: i === 0 ? 0 : '-7px',
+          zIndex: max - i, position: 'relative', overflow: 'hidden', flexShrink: 0,
+        }}>
           <Avatar name={m.user?.name || '?'} style={{ width: '24px', height: '24px', fontSize: '10px', minWidth: '24px', minHeight: '24px' }} />
         </div>
       ))}
       {extra > 0 && (
-        <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid white', marginLeft: '-7px', background: '#E5E5EA', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '700', color: '#636366', zIndex: 0 }}>
+        <div style={{
+          width: '24px', height: '24px', borderRadius: '50%', border: '2px solid white',
+          marginLeft: '-7px', background: '#E5E5EA', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', fontSize: '10px', fontWeight: '700', color: '#636366', zIndex: 0,
+        }}>
           +{extra}
         </div>
       )}
@@ -26,45 +34,43 @@ const MemberAvatarStack = memo(function MemberAvatarStack({ members, max = 3 }) 
   );
 });
 
-// Square card design from design reference
 const GroupCard = memo(function GroupCard({ group, onClick }) {
   const youOwe = group.balance?.youOwe || 0;
   const youAreOwed = group.balance?.youAreOwed || 0;
   const isSettled = group.balance?.isSettled;
 
-  let badgeText = '', badgeColor = '';
-  if (youOwe > 0) { badgeText = `-$${youOwe.toLocaleString()}`; badgeColor = '#FF3B30'; }
-  else if (youAreOwed > 0) { badgeText = `+$${youAreOwed.toLocaleString()}`; badgeColor = '#34C759'; }
-  else if (isSettled) { badgeText = 'Settled'; badgeColor = '#8E8E93'; }
+  let badgeText = '', badgeColor = '#8E8E93';
+  if (youOwe > 0) { badgeText = `-₹${youOwe.toLocaleString()}`; badgeColor = '#FF3B30'; }
+  else if (youAreOwed > 0) { badgeText = `+₹${youAreOwed.toLocaleString()}`; badgeColor = '#34C759'; }
+  else if (isSettled) { badgeText = 'Settled'; }
 
-  let subtext = '';
-  if (group.lastExpense) {
-    subtext = `Last activity: ${group.lastExpense.timeAgo || 'recently'}`;
-  } else if (group.createdAt) {
-    subtext = `Created ${new Date(group.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}`;
-  }
+  const currSymbol = group.currencySymbol || '₹';
+  if (youOwe > 0) badgeText = `-${currSymbol}${youOwe.toLocaleString()}`;
+  else if (youAreOwed > 0) badgeText = `+${currSymbol}${youAreOwed.toLocaleString()}`;
 
-  const isDark = group._id?.slice(-1) > '8';
+  const subtext = group.lastActivity
+    ? `Last: ${new Date(group.lastActivity.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}`
+    : `Created ${new Date(group.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}`;
+
+  // Alternate dark card every other group
+  const charCode = group._id?.charCodeAt(group._id.length - 1) || 0;
+  const isDark = charCode % 3 === 0;
 
   return (
     <div
       onClick={onClick}
       style={{
         background: isDark ? '#1C1C2E' : '#fff',
-        borderRadius: '24px',
-        padding: '16px',
-        cursor: 'pointer',
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: '160px',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        borderRadius: '24px', padding: '16px', cursor: 'pointer',
+        position: 'relative', overflow: 'hidden', minHeight: '160px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
         transition: 'transform 120ms ease-out',
+        WebkitTapHighlightColor: 'transparent',
       }}
+      onTouchStart={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
+      onTouchEnd={(e) => e.currentTarget.style.transform = 'scale(1)'}
     >
-      {/* Balance badge */}
       {badgeText && (
         <div style={{
           position: 'absolute', top: '10px', right: '10px',
@@ -72,18 +78,20 @@ const GroupCard = memo(function GroupCard({ group, onClick }) {
           background: badgeText === 'Settled' ? '#E5E5EA' : `${badgeColor}20`,
           border: `1px solid ${badgeColor}30`,
         }}>
-          <span style={{ fontSize: '13px', fontWeight: '700', color: badgeColor }}>{badgeText}</span>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: badgeColor }}>{badgeText}</span>
         </div>
       )}
 
-      {/* Group icon */}
       <div style={{ width: '52px', height: '52px', borderRadius: '16px', overflow: 'hidden', marginBottom: '12px' }}>
         <Avatar name={group.name} style={{ width: '52px', height: '52px', fontSize: '22px', borderRadius: '16px' }} />
       </div>
 
-      {/* Name */}
       <div>
-        <h4 style={{ fontSize: '18px', fontWeight: '700', color: isDark ? '#fff' : '#1C1C1E', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <h4 style={{
+          fontSize: '17px', fontWeight: '700',
+          color: isDark ? '#fff' : '#1C1C1E',
+          marginBottom: '8px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
           {group.name}
         </h4>
         <MemberAvatarStack members={group.members} max={3} />
@@ -110,6 +118,23 @@ export default function Groups() {
     return activeGroups.filter(g => g.name.toLowerCase().includes(q));
   }, [activeGroups, searchQuery]);
 
+  // Build real unique members across all groups for the friend strip
+  const friendStrip = useMemo(() => {
+    const seen = new Set();
+    const friends = [];
+    for (const group of activeGroups) {
+      for (const m of (group.members || [])) {
+        const uid = m.user?._id;
+        if (uid && uid !== user?._id && !seen.has(uid)) {
+          seen.add(uid);
+          friends.push(m.user);
+          if (friends.length >= 8) return friends;
+        }
+      }
+    }
+    return friends;
+  }, [activeGroups, user]);
+
   const handleGroupClick = useCallback((id) => navigate(`/groups/${id}`), [navigate]);
 
   return (
@@ -121,40 +146,50 @@ export default function Groups() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '12px' }}>
             <div style={{ flex: 1, position: 'relative' }}>
               <IoSearch style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#8E8E93', fontSize: '18px' }} />
-              <input autoFocus type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search groups..." style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '12px', border: 'none', background: '#E5E5EA', outline: 'none', fontSize: '17px', color: '#1C1C1E' }} />
+              <input
+                autoFocus type="text" value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search groups..."
+                style={{ width: '100%', padding: '12px 12px 12px 40px', borderRadius: '12px', border: 'none', background: '#E5E5EA', outline: 'none', fontSize: '17px', color: '#1C1C1E' }}
+              />
             </div>
             <button onClick={() => { setSearchOpen(false); setSearchQuery(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#007AFF', fontSize: '17px', fontWeight: '400' }}>Cancel</button>
           </div>
         ) : (
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: '16px' }}>
-            {/* User avatar */}
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
               <Avatar name={user?.name || 'U'} style={{ width: '40px', height: '40px', fontSize: '16px' }} />
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#1C1C1E', flex: 1, letterSpacing: '-0.3px' }}>Groups</h1>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: '13px', color: '#8E8E93', margin: '0 0 1px' }}>Welcome back 👋</p>
+              <h1 style={{ fontSize: '20px', fontWeight: '700', color: '#1C1C1E', margin: 0, letterSpacing: '-0.3px' }}>{user?.name?.split(' ')[0] || 'Groups'}</h1>
+            </div>
             <button onClick={() => setSearchOpen(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#1C1C1E', fontSize: '22px' }}>
               <IoSearch />
             </button>
           </div>
         )}
 
-        {/* Friend strip */}
-        <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '16px', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
-          {/* New group button */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0, cursor: 'pointer' }} onClick={() => navigate('/get-started')}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#fff', border: '2px dashed #C7C7CC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#8E8E93' }}>+</div>
-            <span style={{ fontSize: '12px', color: '#8E8E93', fontWeight: '500' }}>New</span>
-          </div>
-          {/* Placeholder friends */}
-          {['Sarah', 'Mike', 'Alex'].map((name, i) => (
-            <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0, cursor: 'pointer' }}>
-              <div style={{ width: '52px', height: '52px', borderRadius: '50%', border: i === 0 ? '2.5px solid #6347F5' : '2.5px solid transparent', overflow: 'hidden' }}>
-                <Avatar name={name} style={{ width: '52px', height: '52px', fontSize: '18px' }} />
-              </div>
-              <span style={{ fontSize: '12px', color: '#1C1C1E', fontWeight: '500' }}>{name}</span>
+        {/* Friend strip — real members from groups */}
+        {friendStrip.length > 0 && (
+          <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '16px', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
+            {/* New group button */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0, cursor: 'pointer' }} onClick={() => navigate('/get-started')}>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#fff', border: '2px dashed #C7C7CC', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', color: '#8E8E93' }}>+</div>
+              <span style={{ fontSize: '12px', color: '#8E8E93', fontWeight: '500' }}>New</span>
             </div>
-          ))}
-        </div>
+            {friendStrip.map((friend, i) => (
+              <div key={friend._id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '50%', border: i === 0 ? '2.5px solid #6347F5' : '2.5px solid transparent', overflow: 'hidden' }}>
+                  <Avatar name={friend.name} style={{ width: '52px', height: '52px', fontSize: '18px' }} />
+                </div>
+                <span style={{ fontSize: '12px', color: '#1C1C1E', fontWeight: '500', maxWidth: '52px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {friend.name?.split(' ')[0]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ── Content ── */}
@@ -162,8 +197,8 @@ export default function Groups() {
 
         {/* Section header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <p style={{ fontSize: '13px', fontWeight: '700', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.8px' }}>YOUR GROUPS</p>
-          <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--blue)', cursor: 'pointer' }}>Sort: Activity</span>
+          <p style={{ fontSize: '13px', fontWeight: '700', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.8px' }}>YOUR GROUPS ({activeGroups.length})</p>
+          <span onClick={() => navigate('/get-started')} style={{ fontSize: '14px', fontWeight: '600', color: 'var(--blue)', cursor: 'pointer' }}>+ New Group</span>
         </div>
 
         {/* Loading skeletons */}
@@ -200,44 +235,59 @@ export default function Groups() {
             {/* Create new tile */}
             <div
               onClick={() => navigate('/get-started')}
-              style={{ background: 'rgba(255,255,255,0.5)', borderRadius: '24px', padding: '16px', cursor: 'pointer', minHeight: '160px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '2px dashed var(--gray-300)', gap: '8px' }}
+              style={{
+                background: 'rgba(255,255,255,0.5)', borderRadius: '24px', padding: '16px',
+                cursor: 'pointer', minHeight: '160px', display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                border: '2px dashed #C7C7CC', gap: '8px',
+              }}
             >
               <span style={{ fontSize: '32px', color: '#8E8E93' }}>+</span>
-              <span style={{ fontSize: '15px', fontWeight: '600', color: '#8E8E93' }}>Create Group</span>
+              <span style={{ fontSize: '15px', fontWeight: '600', color: '#8E8E93', textAlign: 'center' }}>Create Group</span>
             </div>
           </div>
         )}
 
         {/* Search no results */}
-        {searchQuery && filteredGroups.length === 0 && activeGroups.length > 0 && (
+        {searchQuery && filteredGroups.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <p style={{ fontSize: '17px', color: '#8E8E93' }}>No groups matching "{searchQuery}"</p>
           </div>
         )}
 
-        {/* Recent Activity section */}
-        {filteredGroups.length > 0 && (
-          <div>
+        {/* Recent activity section */}
+        {!searchQuery && activeGroups.some(g => g.lastActivity) && (
+          <div style={{ marginTop: '8px' }}>
             <p style={{ fontSize: '13px', fontWeight: '700', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px' }}>RECENT ACTIVITY</p>
-            {activeGroups.slice(0, 3).map((group, i) => group.lastExpense && (
-              <div key={i} style={{ background: '#fff', borderRadius: '16px', padding: '14px 16px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(99,71,245,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>💸</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: '15px', fontWeight: '600', color: '#1C1C1E', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {group.lastExpense.paidBy?.name?.split(' ')[0]} paid for "{group.lastExpense.description}"
-                  </p>
-                  <p style={{ fontSize: '13px', color: '#8E8E93', margin: 0 }}>
-                    {group.lastExpense.timeAgo || 'recently'} • {group.name}
-                  </p>
+            {activeGroups
+              .filter(g => g.lastActivity)
+              .slice(0, 3)
+              .map((group) => (
+                <div
+                  key={group._id}
+                  onClick={() => handleGroupClick(group._id)}
+                  style={{
+                    background: '#fff', borderRadius: '16px', padding: '14px 16px',
+                    marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '12px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer',
+                  }}
+                >
+                  <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(99,71,245,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>💸</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '15px', fontWeight: '600', color: '#1C1C1E', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {group.lastActivity.description}
+                    </p>
+                    <p style={{ fontSize: '13px', color: '#8E8E93', margin: 0 }}>
+                      {new Date(group.lastActivity.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })} • {group.name}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>
 
-      {/* ── Bottom Nav ── */}
-      <BottomNav showFab={false} />
+      <BottomNav />
     </div>
   );
 }

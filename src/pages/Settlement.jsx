@@ -23,11 +23,18 @@ export default function Settlement() {
     setSettling(true);
     try {
       await settleAll(id);
-      await fetchGroup(id);
-      navigate(`/groups/${id}/settled`, { replace: true });
+      const updatedGroup = await fetchGroup(id);
+      navigate(`/groups/${id}/settled`, {
+        replace: true,
+        state: {
+          totalSettled: settlementData?.totalToSettle || 0,
+          memberCount: settlementData?.transfers?.length || 0,
+        }
+      });
     } catch (err) { }
     setSettling(false);
-  }, [id, settleAll, fetchGroup, navigate]);
+  }, [id, settleAll, fetchGroup, navigate, settlementData]);
+
 
   const handleSettleSingle = useCallback(async (transfer) => {
     try {
