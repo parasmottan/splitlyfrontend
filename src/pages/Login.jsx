@@ -23,50 +23,72 @@ export default function Login() {
   };
 
   return (
-    <div className="page page-white" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100dvh', padding: '40px 20px' }}>
-      <h1 className="title-large" style={{ marginBottom: '8px' }}>Welcome back</h1>
-      <p style={{ color: 'var(--text-secondary)', fontSize: '15px', marginBottom: '40px' }}>Sign in to your account</p>
+    <div className="page" style={{
+      display: 'flex', flexDirection: 'column', minHeight: '100dvh', padding: '40px 24px',
+      background: 'linear-gradient(160deg, #EAEBFF 0%, #D8E5FF 50%, #E2EDF8 100%)'
+    }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 
-      {error && (
-        <div style={{ background: 'var(--red-light)', color: 'var(--red)', padding: '12px 16px', borderRadius: '12px', marginBottom: '20px', fontSize: '15px', lineHeight: '1.4' }}>
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">Email</label>
-          <input
-            className="form-input"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => { setEmail(e.target.value); clearError(); }}
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">Password</label>
-          <input
-            className="form-input"
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); clearError(); }}
-            required
-          />
-        </div>
-
-        <button className="btn-primary" type="submit" disabled={submitting} style={{ marginTop: '24px' }}>
-          {submitting ? 'Signing in...' : 'Sign In'}
+        {/* Back button */}
+        <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: '50px', left: '20px', fontSize: '24px', color: '#111827' }}>
+          &#8592;
         </button>
-      </form>
 
-      <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '15px', color: 'var(--text-secondary)' }}>
+        <h1 style={{ fontSize: '38px', fontWeight: '800', marginBottom: '12px', color: '#111827', letterSpacing: '-0.5px' }}>
+          Welcome back 😎
+        </h1>
+        <p style={{ color: '#4B5563', fontSize: '17px', fontWeight: '500', marginBottom: '40px' }}>
+          Ready to clear some vibes?
+        </p>
+
+        {error && (
+          <div style={{ background: '#FEE2E2', color: '#DC2626', padding: '16px', borderRadius: '16px', marginBottom: '24px', fontSize: '15px', fontWeight: '500' }}>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group" style={{ marginBottom: '20px' }}>
+            <label className="form-label" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', letterSpacing: '0.5px' }}>EMAIL</label>
+            <input
+              className="form-input"
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => { setEmail(e.target.value); clearError(); }}
+              required
+            />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '12px' }}>
+            <label className="form-label" style={{ fontSize: '13px', fontWeight: '700', color: '#374151', letterSpacing: '0.5px' }}>PASSWORD</label>
+            <input
+              className="form-input"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); clearError(); }}
+              required
+            />
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '32px' }}>
+            <span style={{ color: 'var(--blue)', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>
+              Forgot password?
+            </span>
+          </div>
+
+          <button className="btn-primary" type="submit" disabled={submitting}>
+            {submitting ? 'Signing in...' : 'Login'}
+          </button>
+        </form>
+
+      </div>
+
+      <p style={{ textAlign: 'center', fontSize: '15px', color: '#4B5563', fontWeight: '500', paddingBottom: '20px' }}>
         Don't have an account?{' '}
-        <span style={{ color: 'var(--blue)', fontWeight: '600', cursor: 'pointer' }} onClick={() => navigate('/register')}>
-          Sign Up
+        <span style={{ color: 'var(--blue)', fontWeight: '700', cursor: 'pointer' }} onClick={() => navigate('/register')}>
+          Sign up
         </span>
       </p>
     </div>

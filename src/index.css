@@ -1,12 +1,12 @@
 /* ======= Capaz Design System – Apple HIG Edition ======= */
 :root {
-  --blue: #007AFF;
-  --blue-light: #E8F1FF;
-  --blue-dark: #0056CC;
+  --blue: #6347f5;
+  --blue-light: #eeebfc;
+  --blue-dark: #4b32cc;
   --red: #FF3B30;
   --red-light: #FFE5E3;
-  --green: #34C759;
-  --green-light: #E5F9EC;
+  --green: #37d686;
+  --green-light: #e5faef;
   --orange: #FF9500;
   --yellow: #FFCC00;
   --purple: #AF52DE;
@@ -35,9 +35,9 @@
   /* Apple HIG radii */
   --radius-xs: 8px;
   --radius-sm: 12px;
-  --radius-md: 14px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-full: 9999px;
 }
 
@@ -207,10 +207,10 @@ textarea {
   color: var(--white);
   font-size: 17px;
   font-weight: 600;
-  border-radius: var(--radius-md);
+  border-radius: 100px;
   border: none;
   cursor: pointer;
-  transition: background 120ms ease-out, transform 120ms ease-out;
+  transition: background 120ms ease-out, transform 120ms ease-out, opacity 120ms ease-out;
 }
 
 .btn-primary:active {
@@ -233,14 +233,15 @@ textarea {
   justify-content: center;
   width: 100%;
   padding: 16px 24px;
-  background: transparent;
-  color: var(--blue);
+  background: var(--white);
+  color: var(--text-primary);
   font-size: 17px;
   font-weight: 600;
-  border-radius: var(--radius-md);
+  border-radius: 100px;
   border: none;
   cursor: pointer;
   transition: transform 120ms ease-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .btn-secondary:active {
@@ -284,18 +285,18 @@ textarea {
 
 .form-input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px 20px;
   font-size: 17px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-sm);
+  background: var(--gray-50);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
-  transition: border-color 200ms ease, box-shadow 200ms ease;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
 }
 
 .form-input:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+  box-shadow: 0 0 0 3px var(--blue-light);
 }
 
 .form-input::placeholder {
