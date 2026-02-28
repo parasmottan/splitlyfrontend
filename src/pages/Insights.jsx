@@ -4,7 +4,7 @@ import BottomNav from '../components/BottomNav';
 import Skeleton from '../components/Skeleton';
 
 const CATEGORY_COLORS = [
-  '#007AFF', '#FF9500', '#34C759', '#FF3B30', '#AF52DE',
+  '#6347F5', '#FF9500', '#34C759', '#FF3B30', '#AF52DE',
   '#FF2D55', '#5856D6', '#00C7BE', '#FFCC00'
 ];
 
@@ -25,9 +25,7 @@ export default function Insights() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchInsights();
-  }, []);
+  useEffect(() => { fetchInsights(); }, []);
 
   const handleGroupFilter = (groupId) => {
     setSelectedGroup(groupId);
@@ -36,173 +34,153 @@ export default function Insights() {
 
   if (loading && !data) {
     return (
-      <div className="page" style={{ background: 'var(--gray-50)' }}>
-        <div style={{ padding: '16px 0 8px' }}>
-          <Skeleton width="120px" height="34px" style={{ marginBottom: '8px' }} />
+      <div style={{ background: '#F2F2F7', minHeight: '100dvh', maxWidth: '430px', margin: '0 auto', padding: '0 20px 100px' }}>
+        <div style={{ padding: '16px 0 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Skeleton width="120px" height="24px" />
+          <Skeleton width="28px" height="28px" borderRadius="50%" />
         </div>
-
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
-          {[1, 2, 3].map(i => (
-            <Skeleton key={i} width="60px" height="32px" borderRadius="9999px" />
-          ))}
+        <div style={{ background: '#fff', borderRadius: '24px', padding: '28px 24px', textAlign: 'center', marginBottom: '16px' }}>
+          <Skeleton width="140px" height="140px" borderRadius="50%" style={{ margin: '0 auto 20px' }} />
+          <Skeleton width="120px" height="22px" style={{ margin: '0 auto 12px' }} />
+          <Skeleton width="180px" height="36px" borderRadius="100px" style={{ margin: '0 auto' }} />
         </div>
-
-        <div className="card" style={{ padding: '24px', marginBottom: '16px', textAlign: 'center' }}>
-          <Skeleton width="80px" height="13px" style={{ margin: '0 auto 16px' }} />
-          <Skeleton width="120px" height="120px" borderRadius="50%" style={{ margin: '0 auto 16px' }} />
-          <Skeleton width="140px" height="14px" style={{ margin: '0 auto' }} />
-        </div>
-
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-          <div className="card" style={{ flex: 1, padding: '16px' }}>
-            <Skeleton width="60px" height="12px" style={{ margin: '0 auto 8px' }} />
-            <Skeleton width="80px" height="22px" style={{ margin: '0 auto 6px' }} />
-            <Skeleton width="100px" height="12px" style={{ margin: '0 auto' }} />
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ flex: 1, background: '#fff', borderRadius: '16px', padding: '20px' }}>
+            <Skeleton width="80%" height="14px" style={{ marginBottom: '8px' }} />
+            <Skeleton width="60%" height="28px" />
           </div>
-          <div className="card" style={{ flex: 1, padding: '16px' }}>
-            <Skeleton width="60px" height="12px" style={{ margin: '0 auto 8px' }} />
-            <Skeleton width="80px" height="22px" style={{ margin: '0 auto 6px' }} />
-            <Skeleton width="100px" height="12px" style={{ margin: '0 auto' }} />
+          <div style={{ flex: 1, background: '#fff', borderRadius: '16px', padding: '20px' }}>
+            <Skeleton width="80%" height="14px" style={{ marginBottom: '8px' }} />
+            <Skeleton width="60%" height="28px" />
           </div>
         </div>
-
-        <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
-          <Skeleton width="140px" height="16px" style={{ marginBottom: '20px' }} />
-          {[1, 2, 3].map(i => (
-            <div key={i} style={{ marginBottom: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <Skeleton width="60px" height="14px" />
-                <Skeleton width="50px" height="14px" />
-              </div>
-              <Skeleton width="100%" height="8px" borderRadius="4px" />
-            </div>
-          ))}
-        </div>
-
         <BottomNav />
       </div>
     );
   }
 
   const maxCategoryAmount = data?.categories?.length > 0 ? Math.max(...data.categories.map(c => c.amount)) : 0;
-  const currSymbol = '\u20B9';
+  const currSymbol = '₹';
+  const score = data?.fairnessScore || 88;
+  const circumference = 2 * Math.PI * 50;
+  const strokeDash = (score / 100) * circumference;
 
   return (
-    <div className="page" style={{ background: 'var(--gray-50)' }}>
-      <div style={{ padding: '16px 0 8px' }}>
-        <h1 className="title-large">Insights</h1>
+    <div style={{ background: '#F2F2F7', minHeight: '100dvh', maxWidth: '430px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ padding: '16px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <button onClick={() => window.history.back()} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#1C1C1E' }}>←</button>
+        <h1 style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', fontSize: '15px', fontWeight: '700', letterSpacing: '1px', color: '#6347F5', textTransform: 'uppercase' }}>INSIGHTS</h1>
+        <button style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: '#1C1C1E' }}>•••</button>
       </div>
 
-      {/* Group Filter Tabs */}
-      {data?.groupTabs?.length > 0 && (
-        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
-          <button
-            onClick={() => handleGroupFilter('all')}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '9999px',
-              background: selectedGroup === 'all' ? 'var(--blue)' : 'var(--white)',
-              color: selectedGroup === 'all' ? 'var(--white)' : 'var(--text-secondary)',
-              fontWeight: '600',
-              fontSize: '14px',
-              border: 'none',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              boxShadow: 'var(--shadow-sm)',
-              transition: 'transform 120ms ease-out'
-            }}
-          >
-            All
-          </button>
-          {data.groupTabs.map(g => (
-            <button
-              key={g._id}
-              onClick={() => handleGroupFilter(g._id)}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '9999px',
-                background: selectedGroup === g._id ? 'var(--blue)' : 'var(--white)',
-                color: selectedGroup === g._id ? 'var(--white)' : 'var(--text-secondary)',
-                fontWeight: '600',
-                fontSize: '14px',
-                border: 'none',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxShadow: 'var(--shadow-sm)',
-                transition: 'transform 120ms ease-out'
-              }}
-            >
-              {g.name}
-            </button>
-          ))}
-        </div>
-      )}
+      <div style={{ padding: '20px 20px 100px' }}>
+        {/* Group Filter Tabs */}
+        {data?.groupTabs?.length > 0 && (
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', marginBottom: '20px', paddingBottom: '4px', WebkitOverflowScrolling: 'touch' }}>
+            {['All', ...data.groupTabs.map(g => g.name)].map((tab, i) => {
+              const tabId = i === 0 ? 'all' : data.groupTabs[i - 1]._id;
+              const isActive = selectedGroup === tabId;
+              return (
+                <button
+                  key={tabId}
+                  onClick={() => handleGroupFilter(tabId)}
+                  style={{
+                    padding: '8px 18px', borderRadius: '100px', whiteSpace: 'nowrap',
+                    background: isActive ? 'var(--blue)' : '#fff',
+                    color: isActive ? '#fff' : '#8E8E93',
+                    fontWeight: '600', fontSize: '14px', border: 'none', cursor: 'pointer',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)', flexShrink: 0,
+                  }}
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-      {/* Fairness Score */}
-      <div className="card" style={{ padding: '24px', marginBottom: '16px', textAlign: 'center' }}>
-        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Fairness Score</p>
-        <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 16px' }}>
-          <svg viewBox="0 0 120 120" style={{ width: '120px', height: '120px', transform: 'rotate(-90deg)' }}>
-            <circle cx="60" cy="60" r="50" fill="none" stroke="var(--gray-200)" strokeWidth="10" />
-            <circle
-              cx="60" cy="60" r="50" fill="none"
-              stroke={data?.fairnessScore >= 80 ? 'var(--green)' : data?.fairnessScore >= 50 ? 'var(--orange)' : 'var(--red)'}
-              strokeWidth="10"
-              strokeLinecap="round"
-              strokeDasharray={`${(data?.fairnessScore || 0) * 3.14} 314`}
-              style={{ transition: 'stroke-dasharray 500ms ease-out' }}
-            />
-          </svg>
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <span style={{ fontSize: '32px', fontWeight: '700' }}>{data?.fairnessScore || 0}</span>
+        {/* Fairness Score Card */}
+        <div style={{ background: '#fff', borderRadius: '28px', padding: '32px 24px 24px', marginBottom: '16px', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+          {/* Circular score */}
+          <div style={{ position: 'relative', width: '180px', height: '180px', margin: '0 auto 20px' }}>
+            <svg width="180" height="180" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#F0EEFF" strokeWidth="12" />
+              <circle
+                cx="60" cy="60" r="50" fill="none"
+                stroke="url(#scoreGrad)"
+                strokeWidth="12"
+                strokeLinecap="round"
+                strokeDasharray={`${strokeDash} ${circumference}`}
+              />
+              <defs>
+                <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#6347F5" />
+                  <stop offset="100%" stopColor="#A78BFA" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
+              <span style={{ fontSize: '44px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-2px' }}>{score}</span>
+              <br />
+              <span style={{ fontSize: '12px', fontWeight: '600', color: '#8E8E93', letterSpacing: '0.5px', textTransform: 'uppercase' }}>SCORE</span>
+            </div>
+            {/* Emoji badge on ring */}
+            <div style={{ position: 'absolute', bottom: '-2px', left: '50%', transform: 'translateX(-50%)', width: '36px', height: '36px', borderRadius: '50%', background: '#fff', boxShadow: '0 4px 12px rgba(0,0,0,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
+              😊
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1C1C1E', marginBottom: '12px' }}>Fairness Score</h3>
+
+          {/* Streak pill */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 18px', background: 'rgba(255,149,0,0.12)', borderRadius: '100px', border: '1px solid rgba(255,149,0,0.2)' }}>
+            <span>🔥</span>
+            <span style={{ fontSize: '13px', fontWeight: '700', color: '#FF9500', letterSpacing: '0.5px', textTransform: 'uppercase' }}>3 DAYS BALANCED STREAK</span>
           </div>
         </div>
-        <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>
-          {data?.fairnessScore >= 80 ? 'Great balance!' : data?.fairnessScore >= 50 ? 'Could be fairer' : 'Unbalanced spending'}
-        </p>
-      </div>
 
-      {/* Spending Summary */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-        <div className="card" style={{ flex: 1, padding: '16px', textAlign: 'center' }}>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Total Spent</p>
-          <p style={{ fontSize: '22px', fontWeight: '700' }}>{currSymbol}{(data?.totalSpent || 0).toFixed(0)}</p>
-          {data?.monthChange !== 0 && (
-            <span style={{ fontSize: '13px', color: data?.monthChange > 0 ? 'var(--red)' : 'var(--green)', fontWeight: '600' }}>
-              {data?.monthChange > 0 ? '\u2191' : '\u2193'}{Math.abs(data?.monthChange)}% vs last month
-            </span>
-          )}
-        </div>
-        <div className="card" style={{ flex: 1, padding: '16px', textAlign: 'center' }}>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '500', marginBottom: '4px' }}>Your Share</p>
-          <p style={{ fontSize: '22px', fontWeight: '700' }}>{currSymbol}{(data?.yourShare || 0).toFixed(0)}</p>
-          <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{data?.sharePercentage || 0}% of total</span>
-        </div>
-      </div>
+        {/* Spending Categories label */}
+        <p style={{ fontSize: '12px', fontWeight: '700', color: '#8E8E93', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: '12px' }}>SPENDING CATEGORIES</p>
 
-      {/* Spending by Category */}
-      {data?.categories?.length > 0 && (
-        <div className="card" style={{ padding: '20px', marginBottom: '16px' }}>
-          <h3 style={{ fontSize: '17px', fontWeight: '600', marginBottom: '16px' }}>Spending by Category</h3>
-          {data.categories.map((cat, i) => (
-            <div key={cat.name} style={{ marginBottom: i < data.categories.length - 1 ? '16px' : '0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                <span style={{ fontSize: '15px', fontWeight: '500' }}>{cat.name}</span>
-                <span style={{ fontSize: '15px', fontWeight: '600' }}>{currSymbol}{cat.amount.toFixed(0)}</span>
+        {/* Category Items */}
+        {data?.categories?.length > 0 ? (
+          data.categories.map((cat, i) => {
+            const pct = Math.round((cat.amount / maxCategoryAmount) * 100);
+            const emoji = ['🏠', '🍕', '🚗', '🛒', '🎬', '💡'][i % 6];
+            const colors = ['#6347F5', '#34C759', '#FF9500'];
+            const barColor = colors[i % colors.length];
+            return (
+              <div key={cat.name} style={{ background: '#fff', borderRadius: '20px', padding: '16px 20px', marginBottom: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '14px', background: 'rgba(99,71,245,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', flexShrink: 0 }}>
+                    {emoji}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                      <div>
+                        <p style={{ fontSize: '17px', fontWeight: '700', color: '#1C1C1E', margin: '0 0 2px' }}>{cat.name}</p>
+                        <p style={{ fontSize: '13px', color: '#8E8E93', margin: 0 }}>Your share: {Math.round(cat.yourShare || pct)}%</p>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <p style={{ fontSize: '17px', fontWeight: '700', color: '#1C1C1E', margin: '0 0 2px' }}>{currSymbol}{cat.amount.toFixed(0)}</p>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', background: '#F2F2F7', borderRadius: '6px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: '600', color: '#8E8E93' }}>Total</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ height: '6px', background: '#F2F2F7', borderRadius: '3px', overflow: 'hidden', marginTop: '8px' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}, ${barColor}CC)`, borderRadius: '3px', transition: 'width 600ms ease-out' }} />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div style={{ height: '8px', background: 'var(--gray-100)', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{
-                  height: '100%',
-                  width: `${(cat.amount / maxCategoryAmount) * 100}%`,
-                  background: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
-                  borderRadius: '4px',
-                  transition: 'width 500ms ease-out'
-                }}></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            );
+          })
+        ) : (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: '#8E8E93' }}>No category data yet</div>
+        )}
+      </div>
 
       <BottomNav />
     </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IoMailOutline } from 'react-icons/io5';
 import useAuthStore from '../stores/authStore';
 
 export default function VerifyOtp() {
@@ -10,8 +9,8 @@ export default function VerifyOtp() {
 
   const { name, email, password } = location.state || {};
 
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [timer, setTimer] = useState(300);
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const [timer, setTimer] = useState(24);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const inputRefs = useRef([]);
@@ -29,21 +28,13 @@ export default function VerifyOtp() {
     return () => clearInterval(interval);
   }, []);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
   const handleChange = (e, index) => {
     const value = e.target.value;
     if (isNaN(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1);
     setOtp(newOtp);
-
-    if (value && index < 5) {
+    if (value && index < 3) {
       inputRefs.current[index + 1].focus();
     }
   };
@@ -56,14 +47,12 @@ export default function VerifyOtp() {
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4);
     if (pasted.length > 0) {
-      const newOtp = [...otp];
-      for (let i = 0; i < pasted.length; i++) {
-        newOtp[i] = pasted[i];
-      }
+      const newOtp = ['', '', '', ''];
+      for (let i = 0; i < pasted.length; i++) newOtp[i] = pasted[i];
       setOtp(newOtp);
-      const focusIndex = Math.min(pasted.length, 5);
+      const focusIndex = Math.min(pasted.length, 3);
       inputRefs.current[focusIndex]?.focus();
     }
   };
@@ -71,15 +60,12 @@ export default function VerifyOtp() {
   const handleVerify = async (e) => {
     e.preventDefault();
     const otpCode = otp.join('');
-    if (otpCode.length < 6) return;
-
+    if (otpCode.length < 4) return;
     setLoading(true);
     try {
       await verifyOtp(name, email, password, otpCode);
       navigate('/groups', { replace: true });
-    } catch (err) {
-      // error handled in store
-    }
+    } catch (err) { }
     setLoading(false);
   };
 
@@ -88,40 +74,53 @@ export default function VerifyOtp() {
     setResending(true);
     try {
       await resendOtp(email);
-      setTimer(300);
-      setOtp(['', '', '', '', '', '']);
+      setTimer(60);
+      setOtp(['', '', '', '']);
       inputRefs.current[0].focus();
     } catch (err) { }
     setResending(false);
   };
 
+  const formatTime = (s) => `0:${s.toString().padStart(2, '0')}`;
+
   return (
-    <div className="page" style={{
-      display: 'flex', flexDirection: 'column', minHeight: '100dvh', padding: '40px 24px',
-      background: 'linear-gradient(160deg, #EAEBFF 0%, #D8E5FF 50%, #E2EDF8 100%)'
+    <div style={{
+      display: 'flex', flexDirection: 'column', minHeight: '100dvh',
+      background: 'linear-gradient(155deg, #EBEDff 0%, #D9E0FF 30%, #C8D6FF 60%, #DDE6F8 100%)',
+      padding: '0',
     }}>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      {/* Back button */}
+      <button
+        onClick={() => navigate(-1)}
+        style={{
+          position: 'absolute', top: '52px', left: '24px',
+          width: '36px', height: '36px', borderRadius: '50%',
+          background: 'rgba(255,255,255,0.5)', backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.6)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '18px', color: '#111827', cursor: 'pointer',
+        }}
+      >
+        ←
+      </button>
 
-        {/* Back button */}
-        <button onClick={() => navigate(-1)} style={{ position: 'absolute', top: '50px', left: '20px', fontSize: '24px', color: '#111827' }}>
-          &#8592;
-        </button>
-
-        <h1 style={{ fontSize: '38px', fontWeight: '800', marginBottom: '12px', textAlign: 'center', color: '#111827', letterSpacing: '-0.5px' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '100px 28px 0' }}>
+        <h1 style={{ fontSize: '36px', fontWeight: '800', marginBottom: '12px', color: '#0F1130', letterSpacing: '-0.8px', lineHeight: '1.1' }}>
           Check your vibe 💌
         </h1>
-        <p style={{ color: '#4B5563', fontSize: '17px', textAlign: 'center', fontWeight: '500', marginBottom: '40px', maxWidth: '280px', lineHeight: '1.5' }}>
+        <p style={{ color: '#555875', fontSize: '16px', fontWeight: '400', marginBottom: '44px', lineHeight: '1.5' }}>
           We sent a code to your email.
         </p>
 
         {error && (
-          <div style={{ background: '#FEE2E2', color: '#DC2626', padding: '16px', borderRadius: '16px', marginBottom: '32px', fontSize: '15px', fontWeight: '500', width: '100%' }}>
+          <div style={{ background: 'rgba(255,59,48,0.1)', color: '#DC2626', padding: '14px 16px', borderRadius: '16px', marginBottom: '24px', fontSize: '15px', border: '1px solid rgba(220,38,38,0.2)' }}>
             {error}
           </div>
         )}
 
-        <form onSubmit={handleVerify} style={{ width: '100%' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '32px' }}>
+        <form onSubmit={handleVerify}>
+          {/* 4-digit OTP boxes */}
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', marginBottom: '28px' }}>
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -134,24 +133,22 @@ export default function VerifyOtp() {
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 onPaste={index === 0 ? handlePaste : undefined}
                 style={{
-                  width: '52px',
-                  height: '64px',
-                  borderRadius: '16px',
-                  border: digit ? '2px solid var(--blue)' : '2px solid rgba(255,255,255,0.6)',
-                  background: digit ? 'var(--white)' : 'rgba(255,255,255,0.4)',
-                  fontSize: '24px',
-                  fontWeight: '700',
-                  color: 'var(--blue)',
-                  textAlign: 'center',
-                  outline: 'none',
-                  transition: 'border-color 200ms ease, box-shadow 200ms ease, background 200ms ease',
-                  boxShadow: digit ? '0 8px 20px rgba(99, 71, 245, 0.15)' : 'none'
+                  width: '64px', height: '72px',
+                  borderRadius: '20px',
+                  border: digit ? '2.5px solid rgba(99,71,245,0.7)' : '2px solid rgba(255,255,255,0.7)',
+                  background: digit ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.45)',
+                  backdropFilter: 'blur(12px)',
+                  fontSize: '28px', fontWeight: '700',
+                  color: digit ? '#6347F5' : '#9CA3AF',
+                  textAlign: 'center', outline: 'none',
+                  boxShadow: digit ? '0 8px 24px rgba(99,71,245,0.18)' : '0 2px 8px rgba(0,0,0,0.04)',
+                  transition: 'all 200ms ease',
                 }}
               />
             ))}
           </div>
 
-          <p style={{ textAlign: 'center', marginBottom: '40px', fontSize: '15px', color: '#4B5563', fontWeight: '600' }}>
+          <p style={{ textAlign: 'center', marginBottom: '36px', fontSize: '15px', fontWeight: '600' }}>
             {timer > 0 ? (
               <span style={{ color: 'var(--blue)' }}>Resend code in {formatTime(timer)}</span>
             ) : (
@@ -161,13 +158,23 @@ export default function VerifyOtp() {
             )}
           </p>
 
-          <button className="btn-primary" type="submit" disabled={loading || otp.join('').length < 6}>
+          <button
+            type="submit"
+            disabled={loading || otp.join('').length < 4}
+            style={{
+              width: '100%', padding: '18px 24px',
+              background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
+              color: 'white', fontSize: '17px', fontWeight: '700',
+              borderRadius: '100px', border: 'none', cursor: 'pointer',
+              boxShadow: '0 8px 24px rgba(99,71,245,0.35)',
+              opacity: (loading || otp.join('').length < 4) ? 0.5 : 1,
+              transition: 'opacity 200ms',
+            }}
+          >
             {loading ? 'Verifying...' : 'Verify & Enter'}
           </button>
         </form>
       </div>
-
-      <div style={{ paddingBottom: '20px' }} />
     </div>
   );
 }
