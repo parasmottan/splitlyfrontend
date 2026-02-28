@@ -1,1 +1,0 @@
-import{j as i}from"./index-DPogj0TL.js";const o=({width:r,height:a,borderRadius:e="var(--radius-md)",className:s="",style:t={}})=>i.jsx("div",{className:`skeleton-pulse ${s}`,style:{width:r||"100%",height:a||"20px",borderRadius:e,background:"linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%)",backgroundSize:"200% 100%",...t}});export{o as S};
