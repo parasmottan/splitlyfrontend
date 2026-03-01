@@ -3,14 +3,12 @@ import api from '../services/api';
 
 const useStoryStore = create((set, get) => ({
   storiesMap: {}, // { [userId]: { userId, userName, stories: [] } }
-  viewedIds: new Set(),
   loading: false,
 
   fetchStories: async () => {
     set({ loading: true });
     try {
       const { data } = await api.get('/stories');
-      // data = [{ userId, userName, stories: [{id, text, bg, fontStyle, createdAt, expiresAt}] }]
       const map = {};
       for (const entry of data) {
         map[entry.userId] = entry;
@@ -23,7 +21,6 @@ const useStoryStore = create((set, get) => ({
 
   addStory: async (text, bg, fontStyle, durationMs) => {
     const { data } = await api.post('/stories', { text, bg, fontStyle, durationMs });
-    // Merge into storiesMap
     set(state => {
       const existing = state.storiesMap[data.userId] || { userId: data.userId, userName: data.userName, stories: [] };
       return {
@@ -38,6 +35,8 @@ const useStoryStore = create((set, get) => ({
               fontStyle: data.fontStyle,
               createdAt: data.createdAt,
               expiresAt: data.expiresAt,
+              viewerCount: 0,
+              viewers: [],
             }],
           },
         },
@@ -46,27 +45,25 @@ const useStoryStore = create((set, get) => ({
     return data;
   },
 
+  // Called when a user views a story slide — records view on backend
+  markStoryViewed: async (storyId) => {
+    try {
+      await api.patch(`/stories/${storyId}/view`);
+      // Re-fetch to get updated viewer counts
+      get().fetchStories();
+    } catch { /* silent */ }
+  },
+
   deleteStory: async (storyId, userId) => {
     await api.delete(`/stories/${storyId}`);
     set(state => {
       const entry = state.storiesMap[userId];
       if (!entry) return state;
-      const stories = entry.stories.filter(s => s.id !== storyId);
+      const stories = entry.stories.filter(s => s.id !== storyId && s.id?.toString() !== storyId?.toString());
       const next = { ...state.storiesMap };
-      if (stories.length === 0) {
-        delete next[userId];
-      } else {
-        next[userId] = { ...entry, stories };
-      }
+      if (stories.length === 0) delete next[userId];
+      else next[userId] = { ...entry, stories };
       return { storiesMap: next };
-    });
-  },
-
-  markViewed: (storyId) => {
-    set(state => {
-      const next = new Set(state.viewedIds);
-      next.add(storyId);
-      return { viewedIds: next };
     });
   },
 
@@ -78,11 +75,11 @@ const useStoryStore = create((set, get) => ({
   },
 
   hasUnviewedStories: (userId) => {
-    const { storiesMap, viewedIds } = get();
+    // For own stories we always show them (no "unviewed" concept)
     const now = Date.now();
-    const entry = storiesMap[userId];
+    const entry = get().storiesMap[userId];
     if (!entry) return false;
-    return entry.stories.some(s => new Date(s.expiresAt).getTime() > now && !viewedIds.has(s.id));
+    return entry.stories.some(s => new Date(s.expiresAt).getTime() > now);
   },
 
   getStoriesForUser: (userId) => {

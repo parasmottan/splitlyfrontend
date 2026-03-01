@@ -162,29 +162,32 @@ function StoryStrip({ currentUser, friendsFromGroups, navigate }) {
   return (
     <div style={{ display: 'flex', gap: 14, overflowX: 'auto', padding: '16px 20px 4px', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
       {/* My story / New button */}
-      <div
-        onClick={() => navigate('/story/compose')}
-        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, flexShrink: 0, cursor: 'pointer' }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, flexShrink: 0 }}>
         <div style={{ position: 'relative' }}>
-          <div style={{
-            width: 62, height: 62, borderRadius: '50%',
-            border: myHasStory ? '2.5px solid #6347F5' : '2px dashed #C7C7CC',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: myHasStory ? 'transparent' : '#F2F2F7', overflow: 'hidden',
-          }}>
+          {/* Main circle: if I have a story → view it; else → compose */}
+          <div
+            onClick={() => myHasStory ? navigate(`/story/${currentUser?._id}`) : navigate('/story/compose')}
+            style={{
+              width: 62, height: 62, borderRadius: '50%',
+              border: myHasStory ? '2.5px solid #6347F5' : '2px dashed #C7C7CC',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: myHasStory ? 'transparent' : '#F2F2F7', overflow: 'hidden', cursor: 'pointer',
+            }}
+          >
             {myHasStory
               ? <Avatar name={currentUser?.name || 'Me'} style={{ width: 62, height: 62, fontSize: 22 }} />
               : <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#8E8E93" strokeWidth="2.5" strokeLinecap="round" /></svg>
             }
           </div>
-          {myHasStory && (
-            <div style={{ position: 'absolute', bottom: 1, right: 1, width: 18, height: 18, borderRadius: '50%', background: '#6347F5', border: '2px solid #fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#fff" strokeWidth="3" strokeLinecap="round" /></svg>
-            </div>
-          )}
+          {/* + badge: always shown to add a new story */}
+          <div
+            onClick={() => navigate('/story/compose')}
+            style={{ position: 'absolute', bottom: 1, right: 1, width: 20, height: 20, borderRadius: '50%', background: '#6347F5', border: '2px solid #F5F5F7', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 1 }}
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="#fff" strokeWidth="3" strokeLinecap="round" /></svg>
+          </div>
         </div>
-        <span style={{ fontSize: 12, color: '#8E8E93', fontWeight: '600' }}>New</span>
+        <span style={{ fontSize: 12, color: myHasStory ? '#6347F5' : '#8E8E93', fontWeight: '700' }}>{myHasStory ? 'My Story' : 'New'}</span>
       </div>
 
       {/* Friend stories / avatars */}
