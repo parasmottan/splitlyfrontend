@@ -121,10 +121,10 @@ export default function Account() {
 
   // ─── Settings items ────────────────────────────────────────────────────────
   const settingsItems = [
-    { Icon: IconAccount, bg: '#E1F5FE', label: 'Account', sub: 'Edit profile, change password' },
-    { Icon: IconPayment, bg: 'rgba(99,71,245,0.1)', label: 'Payment Methods', sub: 'Manage cards & banks' },
-    { Icon: IconBell, bg: '#FFF3E0', label: 'Notifications', sub: 'Customize alerts' },
-    { Icon: IconHelp, bg: '#E8F5E9', label: 'Help & Support', sub: 'FAQ & Contact Us' },
+    { Icon: IconAccount, bg: '#E1F5FE', label: 'Account', sub: 'Edit profile, change password', route: '/account/settings' },
+    { Icon: IconPayment, bg: 'rgba(99,71,245,0.1)', label: 'Payment Methods', sub: 'Manage cards & banks', route: '/account/payment-methods' },
+    { Icon: IconBell, bg: '#FFF3E0', label: 'Notifications', sub: 'Customize alerts', route: '/account/notifications' },
+    { Icon: IconHelp, bg: '#E8F5E9', label: 'Help & Support', sub: 'FAQ & Contact Us', route: '/account/help' },
   ];
 
   return (
@@ -245,6 +245,7 @@ export default function Account() {
           {settingsItems.map(item => (
             <div
               key={item.label}
+              onClick={() => navigate(item.route)}
               style={{
                 background: '#fff', borderRadius: 20, padding: '16px 18px',
                 display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer',

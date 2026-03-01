@@ -22,6 +22,10 @@ const VerifyOtp = lazy(() => import('./pages/VerifyOtp'));
 const JoinInvite = lazy(() => import('./pages/JoinInvite'));
 const StoryCompose = lazy(() => import('./pages/StoryCompose'));
 const StoryViewer = lazy(() => import('./pages/StoryViewer'));
+const AccountSettings = lazy(() => import('./pages/AccountSettings'));
+const PaymentMethods = lazy(() => import('./pages/PaymentMethods'));
+const NotificationSettings = lazy(() => import('./pages/NotificationSettings'));
+const HelpSupport = lazy(() => import('./pages/HelpSupport'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
@@ -80,6 +84,10 @@ export default function App() {
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
             <Route path="/story/compose" element={<ProtectedRoute><StoryCompose /></ProtectedRoute>} />
             <Route path="/story/:userId" element={<ProtectedRoute><StoryViewer /></ProtectedRoute>} />
+            <Route path="/account/settings" element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
+            <Route path="/account/payment-methods" element={<ProtectedRoute><PaymentMethods /></ProtectedRoute>} />
+            <Route path="/account/notifications" element={<ProtectedRoute><NotificationSettings /></ProtectedRoute>} />
+            <Route path="/account/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
