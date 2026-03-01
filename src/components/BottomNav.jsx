@@ -88,7 +88,7 @@ function BottomNav({ showFab = true }) {
       <div style={{
         background: '#fff',
         borderRadius: '100px',
-        boxShadow: '0 4px 32px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06)',
+        border: '2px solid #1C1C1E',
         display: 'flex', alignItems: 'center', justifyContent: 'space-around',
         padding: '10px 8px',
         pointerEvents: 'all',
@@ -103,10 +103,10 @@ function BottomNav({ showFab = true }) {
                 onClick={handleAdd}
                 style={{
                   width: '56px', height: '56px', borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
+                  background: '#1C1C1E',
                   border: 'none', cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 4px 20px rgba(99,71,245,0.45)',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.35)',
                   marginTop: '-24px',
                   transition: 'transform 120ms ease',
                   WebkitTapHighlightColor: 'transparent',
@@ -115,8 +115,12 @@ function BottomNav({ showFab = true }) {
                 onTouchStart={e => e.currentTarget.style.transform = 'scale(0.92)'}
                 onTouchEnd={e => e.currentTarget.style.transform = 'scale(1)'}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 5V19M5 12H19" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" />
+                {/* 2x2 grid icon */}
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="2" y="2" width="7" height="7" rx="1.5" fill="white" />
+                  <rect x="11" y="2" width="7" height="7" rx="1.5" fill="white" />
+                  <rect x="2" y="11" width="7" height="7" rx="1.5" fill="white" />
+                  <rect x="11" y="11" width="7" height="7" rx="1.5" fill="white" />
                 </svg>
               </button>
             );

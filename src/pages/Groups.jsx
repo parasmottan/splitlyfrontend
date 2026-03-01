@@ -394,48 +394,54 @@ export default function Groups() {
 
         {/* ── Recent Activity ── */}
         {!searchQuery && (
-          <div>
-            <p style={{ fontSize: 12, fontWeight: '800', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>RECENT ACTIVITY</p>
+          <div style={{ marginBottom: 8 }}>
+            <p style={{ fontSize: 12, fontWeight: '800', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '1px', margin: '0 0 12px' }}>RECENT ACTIVITY</p>
 
-            {activityLoading && [1, 2, 3].map(i => (
-              <div key={i} style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 44, height: 44, borderRadius: 14, background: '#F2F2F7', flexShrink: 0 }} />
-                <div style={{ flex: 1 }}>
-                  <div style={{ width: '60%', height: 14, borderRadius: 7, background: '#F2F2F7', marginBottom: 8 }} />
-                  <div style={{ width: '80%', height: 12, borderRadius: 6, background: '#F2F2F7' }} />
-                </div>
-              </div>
-            ))}
-
-            {!activityLoading && recentActivity.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '20px 0', color: '#8E8E93', fontSize: 14 }}>No recent activity</div>
-            )}
-
-            {recentActivity.map((item, idx) => {
-              const isPositive = item.amount > 0;
-              const cat = CATEGORY_DATA[item.category] || CATEGORY_DATA.other;
-              const ago = timeAgo(item.date);
-              return (
-                <div key={item._id || idx} style={{ background: '#fff', borderRadius: 16, padding: '14px 16px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 14, background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>
-                    {cat.emoji}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: '700', color: '#1C1C1E', margin: '0 0 3px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      <span style={{ color: '#6347F5' }}>{item.paidByName || 'You'}</span>
-                      {' paid '}
-                      <span style={{ color: '#007AFF', fontStyle: 'italic' }}>"{item.description}"</span>
-                    </p>
-                    <p style={{ fontSize: 12, color: '#8E8E93', margin: 0 }}>
-                      {ago} · {item.groupName || 'Group'}
-                      {item.settledAmount && <span style={{ color: '#34C759', fontWeight: '700' }}> · +₹{Math.abs(item.settledAmount).toFixed(0)}</span>}
-                    </p>
+            {/* Single white capsule card */}
+            <div style={{ background: '#fff', borderRadius: 24, overflow: 'hidden', boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}>
+              {activityLoading && [1, 2].map(i => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderBottom: i === 1 ? 'none' : '1px solid #F2F2F7' }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 14, background: '#F2F2F7', flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ width: '72%', height: 13, borderRadius: 7, background: '#F2F2F7', marginBottom: 8 }} />
+                    <div style={{ width: '50%', height: 11, borderRadius: 6, background: '#F2F2F7' }} />
                   </div>
                 </div>
-              );
-            })}
+              ))}
+
+              {!activityLoading && recentActivity.length === 0 && (
+                <div style={{ padding: '32px 20px', textAlign: 'center', color: '#8E8E93', fontSize: 14 }}>No recent activity</div>
+              )}
+
+              {recentActivity.map((item, idx) => {
+                const cat = CATEGORY_DATA[item.category] || CATEGORY_DATA.other;
+                const ago = timeAgo(item.date);
+                const isLast = idx === recentActivity.length - 1;
+                const isSettlement = item.type === 'settlement';
+                return (
+                  <div key={item._id || idx} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 18px', borderBottom: isLast ? 'none' : '1px solid #F2F2F7' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 14, flexShrink: 0, background: cat.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
+                      {cat.emoji}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: '600', color: '#1C1C1E', margin: '0 0 4px', lineHeight: 1.4 }}>
+                        {isSettlement ? (
+                          <><span>You settled up with </span><span style={{ color: '#007AFF', fontWeight: '700' }}>{item.groupName || 'group'}</span><span> group</span></>
+                        ) : (
+                          <><span style={{ color: '#6347F5', fontWeight: '700' }}>{item.paidByName || 'You'}</span><span> paid </span>{item.payeeName && <><span style={{ color: '#007AFF', fontWeight: '700' }}>{item.payeeName}</span><span> for </span></>}<span style={{ fontStyle: 'italic' }}>"{item.description}"</span></>
+                        )}
+                      </p>
+                      <p style={{ fontSize: 12, color: '#8E8E93', margin: 0, fontWeight: '500' }}>
+                        {ago}{!isSettlement && item.groupName && <span> · {item.groupName}</span>}{isSettlement && item.amount && <span> · -₹{Math.abs(item.amount).toFixed(2)}</span>}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
+
       </div>
 
       <BottomNav />
