@@ -95,6 +95,14 @@ export default function PrivacyPolicy() {
           </a>
         </div>
 
+        {/* Developer credit */}
+        <div style={{ marginTop: 48, paddingTop: 20, borderTop: '1px solid rgba(99,71,245,0.15)', textAlign: 'center' }}>
+          <p style={{ fontSize: 12, color: '#C7C7CC', margin: '0 0 3px', letterSpacing: '0.3px' }}>Developed by</p>
+          <p style={{ fontSize: 13, fontWeight: '700', color: '#6347F5', margin: 0, opacity: 0.75 }}>
+            codexcoder <span style={{ color: '#8E8E93', fontWeight: '500' }}>(parasmottan)</span>
+          </p>
+        </div>
+
       </div>
     </div>
   );
