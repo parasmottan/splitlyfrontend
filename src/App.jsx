@@ -8,6 +8,7 @@ const Register = lazy(() => import('./pages/Register'));
 const GetStarted = lazy(() => import('./pages/GetStarted'));
 const CreateGroup = lazy(() => import('./pages/CreateGroup'));
 const JoinGroup = lazy(() => import('./pages/JoinGroup'));
+const Home = lazy(() => import('./pages/Home'));
 const Groups = lazy(() => import('./pages/Groups'));
 const GroupDashboard = lazy(() => import('./pages/GroupDashboard'));
 const GroupSettings = lazy(() => import('./pages/GroupSettings'));
@@ -30,7 +31,7 @@ function ProtectedRoute({ children }) {
 function PublicRoute({ children }) {
   const { user, loading } = useAuthStore();
   if (loading) return <div className="loading-center"><div className="spinner"></div></div>;
-  if (user) return <Navigate to="/groups" replace />;
+  if (user) return <Navigate to="/home" replace />;
   return children;
 }
 
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/join/:token" element={<JoinInvite />} />
 
             {/* Protected */}
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/get-started" element={<ProtectedRoute><GetStarted /></ProtectedRoute>} />
             <Route path="/create-group" element={<ProtectedRoute><CreateGroup /></ProtectedRoute>} />
             <Route path="/join-group" element={<ProtectedRoute><JoinGroup /></ProtectedRoute>} />

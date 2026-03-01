@@ -4,7 +4,7 @@ import { HiOutlineUserGroup, HiUserGroup, HiOutlinePlus } from 'react-icons/hi2'
 import { IoHomeOutline, IoHome, IoReceiptOutline, IoReceipt, IoPersonOutline, IoPerson } from 'react-icons/io5';
 
 const tabs = [
-  { key: 'home', label: 'Home', path: '/groups', icon: IoHomeOutline, activeIcon: IoHome },
+  { key: 'home', label: 'Home', path: '/home', icon: IoHomeOutline, activeIcon: IoHome },
   { key: 'groups', label: 'Groups', path: '/groups', icon: HiOutlineUserGroup, activeIcon: HiUserGroup },
   { key: 'add', label: '', path: null, fab: true },
   { key: 'activity', label: 'Activity', path: '/activity', icon: IoReceiptOutline, activeIcon: IoReceipt },
