@@ -1,0 +1,15 @@
+{
+  "short_name": "Splitly",
+  "name": "Splitly - Group Expense Tracker",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#613EEA",
+  "background_color": "#EAEAF5"
+}

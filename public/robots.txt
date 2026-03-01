@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /terms
+Allow: /account/help
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /groups/
+Disallow: /settings
+Disallow: /account/settings
+Disallow: /account/notifications
+Disallow: /account/payment-methods
+Disallow: /story/
+
+Sitemap: https://splitly-phi.vercel.app/sitemap.xml

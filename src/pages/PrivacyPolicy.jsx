@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const PAGE_BG = '#EAEAF5';
 const CARD = { background: '#fff', borderRadius: 20, padding: '20px 20px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginBottom: 14 };
@@ -42,6 +43,11 @@ export default function PrivacyPolicy() {
 
   return (
     <div style={{ background: PAGE_BG, minHeight: '100dvh', maxWidth: '430px', margin: '0 auto' }}>
+      <SEO
+        title="Privacy Policy - Splitly"
+        description="Learn how Splitly collects, uses, and protects your personal data and privacy."
+        canonical="/privacy"
+      />
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>

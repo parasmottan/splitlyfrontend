@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
+import SEO from '../components/SEO';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,6 +30,11 @@ export default function Login() {
       background: 'linear-gradient(155deg, #EBEDff 0%, #D9E0FF 30%, #C8D6FF 60%, #DDE6F8 100%)',
       position: 'relative', overflow: 'hidden',
     }}>
+      <SEO
+        title="Login - Splitly"
+        description="Log in to your Splitly account and access your group expense trackers securely."
+        canonical="/login"
+      />
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}

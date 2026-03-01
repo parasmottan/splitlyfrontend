@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
+import SEO from '../components/SEO';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ export default function Register() {
       display: 'flex', flexDirection: 'column', minHeight: '100dvh',
       background: 'linear-gradient(155deg, #EBEDff 0%, #D9E0FF 30%, #C8D6FF 60%, #DDE6F8 100%)',
     }}>
+      <SEO
+        title="Create Account - Splitly"
+        description="Sign up for Splitly and start splitting expenses with friends instantly."
+        canonical="/register"
+      />
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}

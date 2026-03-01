@@ -6,6 +6,7 @@ import useNotificationStore from '../stores/notificationStore';
 import Avatar from '../components/Avatar';
 import BottomNav from '../components/BottomNav';
 import api from '../services/api';
+import SEO from '../components/SEO';
 
 // ─── Notification Panel ───────────────────────────────────────────────
 function NotificationPanel({ notifications, unreadCount, onClose, onMarkRead }) {
@@ -391,6 +392,11 @@ export default function Home() {
       display: 'flex', flexDirection: 'column', minHeight: '100dvh',
       maxWidth: '430px', margin: '0 auto', position: 'relative',
     }}>
+      <SEO
+        title="Dashboard - Splitly"
+        description="Your Splitly Dashboard"
+        noindex={true}
+      />
 
       {/* ── Header ── */}
       <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

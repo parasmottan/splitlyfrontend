@@ -1,30 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 export default function Landing() {
-  const navigate = useNavigate();
-  const orbRef1 = useRef(null);
-  const orbRef2 = useRef(null);
-  const orbRef3 = useRef(null);
-
-  useEffect(() => {
-    const animate = () => {
-      const t = Date.now() / 1000;
-      if (orbRef1.current) {
-        orbRef1.current.style.transform = `translateX(-50%) translateY(${Math.sin(t * 0.4) * 12}px)`;
-      }
-      if (orbRef2.current) {
-        orbRef2.current.style.transform = `translateY(${Math.sin(t * 0.3 + 1) * 10}px)`;
-      }
-      if (orbRef3.current) {
-        orbRef3.current.style.transform = `translateY(${Math.sin(t * 0.5 + 2) * 8}px)`;
-      }
-      requestAnimationFrame(animate);
-    };
-    const frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
+  // ... existing refs and useEffect
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -32,9 +9,14 @@ export default function Landing() {
       background: 'linear-gradient(155deg, #EBEDff 0%, #D9E0FF 30%, #C8D6FF 60%, #DDE6F8 100%)',
       position: 'relative', overflow: 'hidden'
     }}>
+      <SEO
+        title="Splitly – Split Expenses Easily with Friends & Groups"
+        description="Splitly is a modern group expense tracking app that helps you split bills, share expenses with friends, and settle balances easily without the awkward money talks."
+        canonical="/"
+      />
+
       {/* Top bar */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px' }}>
-        {/* Logo dots */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', zIndex: 10 }}>
         <div style={{ width: '34px', height: '34px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px', padding: '6px', background: 'rgba(255,255,255,0.3)', borderRadius: '10px', backdropFilter: 'blur(10px)' }}>
           {[...Array(9)].map((_, i) => (
             <div key={i} style={{ background: 'rgba(99, 71, 245, 0.7)', borderRadius: '50%' }} />
@@ -73,19 +55,19 @@ export default function Landing() {
       </div>
 
       {/* Bottom content */}
-      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', flex: 1, padding: '0 28px 48px' }}>
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', flex: 1, padding: '0 28px 24px' }}>
         <h1 style={{
-          fontSize: '42px', fontWeight: '800', textAlign: 'center', lineHeight: '1.1',
+          fontSize: '38px', fontWeight: '800', textAlign: 'center', lineHeight: '1.2',
           marginBottom: '14px', letterSpacing: '-1.5px', color: '#0F1130',
         }}>
-          Split smart.<br />
-          Stay cool.
+          Split expenses.<br />
+          Stay balanced.
         </h1>
-        <p style={{ fontSize: '17px', color: '#555875', textAlign: 'center', lineHeight: '1.5', marginBottom: '40px', fontWeight: '400' }}>
-          No awkward money talks.
+        <p style={{ fontSize: '15px', color: '#555875', textAlign: 'center', lineHeight: '1.5', marginBottom: '32px', fontWeight: '500' }}>
+          The smartest group expense tracker to <strong style={{ color: '#6347F5' }}>share expenses with friends</strong>, split bills, and settle balances easily without the awkward money talks.
         </p>
 
-        <div style={{ width: '100%', maxWidth: '360px' }}>
+        <div style={{ width: '100%', maxWidth: '360px', marginBottom: '24px' }}>
           <button
             className="btn-primary"
             onClick={() => navigate('/register')}
@@ -102,9 +84,13 @@ export default function Landing() {
           </button>
         </div>
 
-        <p style={{ marginTop: '28px', fontSize: '13px', color: '#999BB5', fontWeight: '500', letterSpacing: '0.2px' }}>
-          Designed for Gen-Z Finance
-        </p>
+        {/* Footer Internal Links for SEO */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', marginTop: 'auto', paddingTop: '16px' }}>
+          <a href="/privacy" style={{ fontSize: '12px', color: '#8E8E93', textDecoration: 'none', fontWeight: '600' }}>Privacy Policy</a>
+          <a href="/terms" style={{ fontSize: '12px', color: '#8E8E93', textDecoration: 'none', fontWeight: '600' }}>Terms & Conditions</a>
+          <a href="/account/help" style={{ fontSize: '12px', color: '#8E8E93', textDecoration: 'none', fontWeight: '600' }}>Help Center</a>
+          <a href="mailto:noreplysplitly@gmail.com" style={{ fontSize: '12px', color: '#8E8E93', textDecoration: 'none', fontWeight: '600' }}>Contact</a>
+        </div>
       </div>
     </div>
   );

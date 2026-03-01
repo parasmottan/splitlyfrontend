@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import SEO from '../components/SEO';
 
 const PAGE_BG = '#EAEAF5';
 const CARD_STYLE = { background: '#fff', borderRadius: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginBottom: 12, overflow: 'hidden' };
@@ -75,6 +76,11 @@ export default function HelpSupport() {
 
   return (
     <div style={{ background: PAGE_BG, minHeight: '100dvh', maxWidth: '430px', margin: '0 auto' }}>
+      <SEO
+        title="Help & Support - Splitly"
+        description="Get help with interpreting balances, adding expenses, or managing groups on Splitly."
+        canonical="/account/help"
+      />
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
