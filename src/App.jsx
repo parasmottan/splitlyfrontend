@@ -26,6 +26,8 @@ const AccountSettings = lazy(() => import('./pages/AccountSettings'));
 const PaymentMethods = lazy(() => import('./pages/PaymentMethods'));
 const NotificationSettings = lazy(() => import('./pages/NotificationSettings'));
 const HelpSupport = lazy(() => import('./pages/HelpSupport'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsConditions = lazy(() => import('./pages/TermsConditions'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
@@ -88,6 +90,8 @@ export default function App() {
             <Route path="/account/payment-methods" element={<ProtectedRoute><PaymentMethods /></ProtectedRoute>} />
             <Route path="/account/notifications" element={<ProtectedRoute><NotificationSettings /></ProtectedRoute>} />
             <Route path="/account/help" element={<ProtectedRoute><HelpSupport /></ProtectedRoute>} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />

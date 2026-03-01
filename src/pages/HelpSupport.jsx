@@ -116,8 +116,8 @@ export default function HelpSupport() {
         <div style={{ textAlign: 'center', marginTop: 20 }}>
           <p style={{ fontSize: 13, color: '#C7C7CC', marginBottom: 8 }}>Capaz v1.0.0</p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 24 }}>
-            <span style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Terms of Service</span>
-            <span style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Privacy Policy</span>
+            <span onClick={() => navigate('/terms')} style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Terms of Service</span>
+            <span onClick={() => navigate('/privacy')} style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Privacy Policy</span>
           </div>
         </div>
       </div>
