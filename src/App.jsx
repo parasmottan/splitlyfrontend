@@ -20,6 +20,8 @@ const Insights = lazy(() => import('./pages/Insights'));
 const Account = lazy(() => import('./pages/Account'));
 const VerifyOtp = lazy(() => import('./pages/VerifyOtp'));
 const JoinInvite = lazy(() => import('./pages/JoinInvite'));
+const StoryCompose = lazy(() => import('./pages/StoryCompose'));
+const StoryViewer = lazy(() => import('./pages/StoryViewer'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
@@ -76,6 +78,8 @@ export default function App() {
             <Route path="/activity" element={<ProtectedRoute><Activity /></ProtectedRoute>} />
             <Route path="/insights" element={<ProtectedRoute><Insights /></ProtectedRoute>} />
             <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+            <Route path="/story/compose" element={<ProtectedRoute><StoryCompose /></ProtectedRoute>} />
+            <Route path="/story/:userId" element={<ProtectedRoute><StoryViewer /></ProtectedRoute>} />
 
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
