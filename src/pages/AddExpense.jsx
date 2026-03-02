@@ -83,20 +83,20 @@ export default function AddExpense() {
   const paidByMember = members.find(m => m.user._id === paidBy)?.user;
 
   return (
-    <div style={{ background: '#F5F3F0', minHeight: '100dvh', display: 'flex', flexDirection: 'column', maxWidth: '430px', margin: '0 auto' }}>
+    <div style={{ background: '#F5F3F0', minHeight: '100dvh', display: 'flex', flexDirection: 'column', maxWidth: '480px', margin: '0 auto' }}>
       {/* Bottom sheet header drag indicator */}
       <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 0' }}>
         <div style={{ width: '36px', height: '4px', borderRadius: '2px', background: 'rgba(0,0,0,0.15)' }} />
       </div>
 
       {/* Sheet header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 24px 8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', fontSize: '15px', fontWeight: '600', color: '#8E8E93', cursor: 'pointer' }}>Cancel</button>
         <h2 style={{ fontSize: '17px', fontWeight: '700', color: '#1C1C1E' }}>New Expense</h2>
         <div style={{ width: '48px' }} />
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px 40px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px 32px' }}>
         {error && (
           <div style={{ background: 'rgba(255,59,48,0.1)', color: '#DC2626', padding: '12px 16px', borderRadius: '16px', marginBottom: '16px', fontSize: '15px', border: '1px solid rgba(220,38,38,0.2)' }}>
             {error}
@@ -113,7 +113,7 @@ export default function AddExpense() {
               value={amount}
               onChange={(e) => { setAmount(e.target.value); setError(''); }}
               style={{
-                fontSize: '64px', fontWeight: '800', border: 'none', width: '200px', textAlign: 'center',
+                fontSize: '52px', fontWeight: '800', border: 'none', width: '180px', textAlign: 'center',
                 background: 'transparent', outline: 'none', color: '#0F1130', letterSpacing: '-2px',
               }}
             />
@@ -209,7 +209,7 @@ export default function AddExpense() {
         </div>
 
         {/* Split Breakdown */}
-        <div style={{ background: 'rgba(255,255,255,0.85)', borderRadius: '20px', padding: '16px 20px', marginBottom: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: 'rgba(255,255,255,0.85)', borderRadius: '20px', padding: '16px', marginBottom: '24px', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: splitType === 'custom' ? '16px' : '0' }}>
             <span style={{ fontSize: '16px', fontWeight: '600', color: '#1C1C1E' }}>Split Breakdown</span>
             <button
@@ -244,7 +244,7 @@ export default function AddExpense() {
           onClick={handleSubmit}
           disabled={loading}
           style={{
-            width: '100%', padding: '18px 24px',
+            width: '100%', padding: '16px',
             background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
             color: 'white', fontSize: '17px', fontWeight: '700',
             borderRadius: '100px', border: 'none', cursor: 'pointer',

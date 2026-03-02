@@ -240,7 +240,7 @@ export default function GroupDashboard() {
   /* ── Loading state ── */
   if (loading && !g) {
     return (
-      <div style={{ background: '#F5F5FA', minHeight: '100dvh', maxWidth: '430px', margin: '0 auto', padding: '0 20px' }}>
+      <div style={{ background: '#F5F5FA', minHeight: '100dvh', maxWidth: '480px', margin: '0 auto', padding: '0 16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', padding: '16px 0', justifyContent: 'space-between' }}>
           <Skeleton width="32px" height="32px" borderRadius="50%" />
           <Skeleton width="130px" height="20px" />
@@ -261,7 +261,7 @@ export default function GroupDashboard() {
   }
 
   return (
-    <div style={{ background: '#F5F5FA', minHeight: '100dvh', maxWidth: '430px', margin: '0 auto' }}>
+    <div style={{ background: '#F5F5FA', minHeight: '100dvh', maxWidth: '480px', margin: '0 auto' }}>
 
       {/* ── HEADER ── */}
       <div style={{
@@ -278,14 +278,14 @@ export default function GroupDashboard() {
         </button>
       </div>
 
-      <div style={{ padding: '0 20px 48px', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+      <div style={{ padding: '0 16px 32px', overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
 
         {/* ── STATUS ── */}
-        <div style={{ textAlign: 'center', padding: '28px 0 16px' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-0.5px', margin: '0 0 6px' }}>
+        <div style={{ textAlign: 'center', padding: '24px 0 16px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-0.5px', margin: '0 0 6px' }}>
             {statusTitle} {statusEmoji}
           </h2>
-          <p style={{ fontSize: '15px', color: '#8E8E93', margin: 0 }}>{statusSub}</p>
+          <p style={{ fontSize: '14px', color: '#8E8E93', margin: 0 }}>{statusSub}</p>
         </div>
 
         {/* ── RING CHART ── */}
@@ -305,7 +305,7 @@ export default function GroupDashboard() {
             onClick={() => navigate(`/groups/${id}/add-expense`)}
             style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              padding: '16px 20px',
+              padding: '12px 16px',
               background: '#1C1C1E',
               color: '#FFFFFF',
               fontSize: '16px', fontWeight: '700',
@@ -313,7 +313,7 @@ export default function GroupDashboard() {
               boxShadow: '0 6px 20px rgba(0,0,0,0.18)',
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>+</span>
+            <span style={{ fontSize: '18px', lineHeight: 1 }}>+</span>
             Add Expense
           </button>
 
@@ -321,7 +321,7 @@ export default function GroupDashboard() {
             onClick={() => navigate(`/groups/${id}/settle`)}
             style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              padding: '16px 20px',
+              padding: '12px 16px',
               background: '#fff',
               color: '#1C1C1E',
               fontSize: '16px', fontWeight: '700',
@@ -329,14 +329,14 @@ export default function GroupDashboard() {
               boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
             }}
           >
-            <span style={{ fontSize: '18px' }}>💳</span>
+            <span style={{ fontSize: '16px' }}>💳</span>
             Settle Balance
           </button>
         </div>
 
         {/* ── EXPENSES SECTION ── */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: '800', color: '#1C1C1E', margin: 0, letterSpacing: '-0.3px' }}>Group Expenses</h2>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#1C1C1E', margin: 0, letterSpacing: '-0.3px' }}>Group Expenses</h2>
           <span
             style={{ fontSize: '14px', fontWeight: '600', color: '#6347F5', cursor: 'pointer' }}
             onClick={() => navigate(`/groups/${id}/settings`)}
@@ -347,13 +347,13 @@ export default function GroupDashboard() {
 
         {/* Expense list */}
         {!g?.expenses || g.expenses.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '48px 20px', background: '#fff', borderRadius: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
-            <div style={{ fontSize: '56px', marginBottom: '12px' }}>🧾</div>
+          <div style={{ textAlign: 'center', padding: '32px 16px', background: '#fff', borderRadius: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.05)' }}>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🧾</div>
             <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1C1C1E', marginBottom: '8px' }}>No expenses yet</h3>
             <p style={{ fontSize: '15px', color: '#8E8E93', marginBottom: '24px' }}>Add your first expense to start tracking.</p>
             <button
               onClick={() => navigate(`/groups/${id}/add-expense`)}
-              style={{ padding: '14px 28px', background: '#6347F5', color: '#fff', fontSize: '16px', fontWeight: '700', borderRadius: '100px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(99,71,245,0.3)' }}
+              style={{ padding: '12px 24px', background: '#6347F5', color: '#fff', fontSize: '16px', fontWeight: '700', borderRadius: '100px', border: 'none', cursor: 'pointer', boxShadow: '0 6px 20px rgba(99,71,245,0.3)' }}
             >
               + Add Expense
             </button>

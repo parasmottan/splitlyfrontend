@@ -80,7 +80,7 @@ export default function Landing() {
       {/* Bottom content */}
       <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', flex: 1, padding: '0 28px 24px' }}>
         <h1 style={{
-          fontSize: '38px', fontWeight: '800', textAlign: 'center', lineHeight: '1.2',
+          fontSize: '32px', fontWeight: '800', textAlign: 'center', lineHeight: '1.2',
           marginBottom: '14px', letterSpacing: '-1.5px', color: '#0F1130',
         }}>
           Split expenses.<br />
@@ -94,14 +94,14 @@ export default function Landing() {
           <button
             className="btn-primary"
             onClick={() => navigate('/register')}
-            style={{ marginBottom: '14px', fontSize: '18px', fontWeight: '700', letterSpacing: '-0.2px', borderRadius: '100px', padding: '18px 24px' }}
+            style={{ marginBottom: '14px', fontSize: '16px', fontWeight: '700', letterSpacing: '-0.2px', borderRadius: '100px', padding: '14px 24px' }}
           >
             Start a Group &nbsp;→
           </button>
           <button
             className="btn-secondary"
             onClick={() => navigate('/login')}
-            style={{ background: 'rgba(255,255,255,0.75)', color: '#0F1130', borderRadius: '100px', padding: '18px 24px', fontSize: '17px', fontWeight: '600', boxShadow: '0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)' }}
+            style={{ background: 'rgba(255,255,255,0.75)', color: '#0F1130', borderRadius: '100px', padding: '14px 24px', fontSize: '16px', fontWeight: '600', boxShadow: '0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8)', backdropFilter: 'blur(8px)' }}
           >
             I already vibe here
           </button>

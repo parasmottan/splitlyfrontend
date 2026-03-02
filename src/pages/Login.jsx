@@ -51,11 +51,11 @@ export default function Login() {
         ←
       </button>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '80px 28px 24px' }}>
-        <h1 style={{ fontSize: '40px', fontWeight: '800', marginBottom: '10px', color: '#0F1130', letterSpacing: '-1px', lineHeight: '1.1' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 16px 24px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '10px', color: '#0F1130', letterSpacing: '-1px', lineHeight: '1.1' }}>
           Welcome back 😎
         </h1>
-        <p style={{ color: '#555875', fontSize: '17px', fontWeight: '400', marginBottom: '44px' }}>
+        <p style={{ color: '#555875', fontSize: '16px', fontWeight: '400', marginBottom: '44px' }}>
           Ready to clear some vibes?
         </p>
 
@@ -132,9 +132,9 @@ export default function Login() {
             type="submit"
             disabled={submitting}
             style={{
-              width: '100%', padding: '18px 24px',
+              width: '100%', padding: '14px 24px',
               background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
-              color: 'white', fontSize: '17px', fontWeight: '700',
+              color: 'white', fontSize: '16px', fontWeight: '700',
               borderRadius: '100px', border: 'none', cursor: 'pointer',
               boxShadow: '0 8px 24px rgba(99,71,245,0.35)',
               transition: 'transform 120ms, opacity 120ms',
@@ -146,7 +146,7 @@ export default function Login() {
         </form>
       </div>
 
-      <p style={{ textAlign: 'center', fontSize: '15px', color: '#555875', fontWeight: '500', padding: '0 24px 40px' }}>
+      <p style={{ textAlign: 'center', fontSize: '15px', color: '#555875', fontWeight: '500', padding: '0 16px 32px' }}>
         Don't have an account?{' '}
         <span style={{ color: 'var(--blue)', fontWeight: '700', cursor: 'pointer' }} onClick={() => navigate('/register')}>
           Sign up

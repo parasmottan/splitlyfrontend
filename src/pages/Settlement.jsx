@@ -85,7 +85,7 @@ export default function Settlement() {
       <div style={{ textAlign: 'center', padding: '32px 24px 28px', background: 'linear-gradient(160deg, #F8F6FF 0%, #F0EEFF 100%)' }}>
         <div style={{ marginBottom: '6px' }}>
           <span style={{ fontSize: '20px', fontWeight: '700', color: '#8E8E93', verticalAlign: 'super', marginRight: '2px' }}>{currSymbol}</span>
-          <span style={{ fontSize: '60px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-2px' }}>
+          <span style={{ fontSize: '52px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-2px' }}>
             {Math.floor(data?.totalToSettle || 0).toLocaleString()}
           </span>
           <span style={{ fontSize: '28px', fontWeight: '600', color: '#8E8E93' }}>
@@ -137,7 +137,7 @@ export default function Settlement() {
           <button
             onClick={() => setShowSettleModal(true)}
             style={{
-              width: '100%', padding: '18px 24px',
+              width: '100%', padding: '16px',
               background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
               color: 'white', fontSize: '17px', fontWeight: '700',
               borderRadius: '100px', border: 'none', cursor: 'pointer',

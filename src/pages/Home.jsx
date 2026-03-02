@@ -390,7 +390,7 @@ export default function Home() {
     <div style={{
       background: 'linear-gradient(180deg, #E8E4FF 0%, #F0EFF7 38%, #F2F2F7 60%)',
       display: 'flex', flexDirection: 'column', minHeight: '100dvh',
-      maxWidth: '430px', margin: '0 auto', position: 'relative',
+      maxWidth: '480px', margin: '0 auto', position: 'relative',
     }}>
       <SEO
         title="Dashboard - Splitly"
@@ -399,7 +399,7 @@ export default function Home() {
       />
 
       {/* ── Header ── */}
-      <div style={{ padding: '20px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ padding: '20px 16px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ width: '46px', height: '46px', borderRadius: '14px', overflow: 'hidden', flexShrink: 0 }}>
             <Avatar name={user?.name || 'U'} style={{ width: '46px', height: '46px', fontSize: '17px', borderRadius: '14px' }} />
@@ -435,7 +435,7 @@ export default function Home() {
       </div>
 
       {/* ── Balance Section ── */}
-      <div style={{ textAlign: 'center', padding: '28px 20px 32px' }}>
+      <div style={{ textAlign: 'center', padding: '24px 16px 24px' }}>
         {/* HEALTHY badge */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fff', borderRadius: '100px', padding: '6px 14px', marginBottom: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isPositive ? '#34C759' : '#FF3B30' }} />
@@ -445,7 +445,7 @@ export default function Home() {
         </div>
 
         {/* Balance amount */}
-        <div style={{ fontSize: '52px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-2px', lineHeight: 1 }}>
+        <div style={{ fontSize: '42px', fontWeight: '800', color: '#1C1C1E', letterSpacing: '-2px', lineHeight: 1 }}>
           ₹{Math.abs(netBalance).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
         </div>
 
@@ -456,13 +456,13 @@ export default function Home() {
       </div>
 
       {/* ── Action Buttons ── */}
-      <div style={{ display: 'flex', gap: '12px', padding: '0 20px 32px' }}>
+      <div style={{ display: 'flex', gap: '12px', padding: '0 16px 24px' }}>
         {/* Add Expense */}
         <button
           onClick={handleAddExpense}
           style={{
             flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-            padding: '18px 20px', borderRadius: '100px',
+            padding: '14px 16px', borderRadius: '100px',
             background: 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
             color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: '17px', fontWeight: '700',
@@ -484,7 +484,7 @@ export default function Home() {
           onClick={handleRequest}
           style={{
             flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-            padding: '18px 20px', borderRadius: '100px',
+            padding: '14px 16px', borderRadius: '100px',
             background: '#fff', color: '#1C1C1E', border: '1.5px solid #E5E5EA',
             cursor: 'pointer', fontSize: '17px', fontWeight: '700',
             boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
@@ -507,7 +507,7 @@ export default function Home() {
       }}>
 
         {/* ── Active Groups ── */}
-        <div style={{ padding: '24px 20px 8px' }}>
+        <div style={{ padding: '20px 16px 8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Active Groups</h2>
             <span
@@ -557,7 +557,7 @@ export default function Home() {
         </div>
 
         {/* ── Recent Activity ── */}
-        <div style={{ padding: '20px 20px 0' }}>
+        <div style={{ padding: '20px 16px 0' }}>
           <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1C1C1E', marginBottom: '4px' }}>Recent Activity</h2>
 
           {activityLoading && (
