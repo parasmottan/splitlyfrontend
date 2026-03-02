@@ -51,16 +51,25 @@ function LazyRoute({ children, fallback: Fallback = AppSkeleton }) {
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
+
+  // If still checking auth, show skeleton to match expected layout
   if (loading) return <AppSkeleton />;
+
+  // Only redirect if we ARE NOT loading and have no user
   if (!user) return <Navigate to="/login" replace />;
-  return children;
+
+  return <div className="route-fade-in">{children}</div>;
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuthStore();
+
   if (loading) return <AppSkeleton />;
+
+  // If logged in, don't show public pages
   if (user) return <Navigate to="/home" replace />;
-  return children;
+
+  return <div className="route-fade-in">{children}</div>;
 }
 
 export default function App() {

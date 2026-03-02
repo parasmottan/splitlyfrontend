@@ -25,24 +25,19 @@ export default function Activity() {
     fetchActivity();
   }, []);
 
-  const getCategoryEmoji = (category) => {
-    const map = { food: '🍕', transport: '🚗', groceries: '🛒', entertainment: '🎬', utilities: '💡', rent: '🏠', travel: '✈️', shopping: '🛍️', drinks: '🍺', other: '💸' };
-    return map[category] || '💸';
-  };
-
   // Client-side filter per tab:
-  // 'groups' = items that have a groupId/groupName
-  // 'friends' = items that don't (direct friend splits)
-  const filteredData = Object.fromEntries(
-    Object.entries(activityData)
-      .map(([date, items]) => {
-        let filtered = items;
-        if (activeTab === 'groups') filtered = items.filter(i => i.groupId || i.groupName);
-        if (activeTab === 'friends') filtered = items.filter(i => !i.groupId && !i.groupName);
-        return [date, filtered];
-      })
-      .filter(([, items]) => items.length > 0)
-  );
+  const filteredData = React.useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(activityData)
+        .map(([date, items]) => {
+          let filtered = items;
+          if (activeTab === 'groups') filtered = items.filter(i => i.groupId || i.groupName);
+          if (activeTab === 'friends') filtered = items.filter(i => !i.groupId && !i.groupName);
+          return [date, filtered];
+        })
+        .filter(([, items]) => items.length > 0)
+    );
+  }, [activityData, activeTab]);
 
   const dateKeys = Object.keys(filteredData);
   const allDateKeys = Object.keys(activityData);

@@ -86,22 +86,28 @@ export default function Account() {
   };
 
   // ─── Derived stats ─────────────────────────────────────────────────────────
-  const activeGroups = groups.filter(g => !g.archived);
-  const totalSaved = activeGroups.reduce((sum, g) => sum + (g.balance?.youAreOwed || 0), 0);
-  const uniqueFriends = new Set();
-  activeGroups.forEach(g => {
-    (g.members || []).forEach(m => {
-      if (m.user?._id !== user?._id) uniqueFriends.add(m.user?._id);
+  const { activeGroups, totalSaved, uniqueFriends } = React.useMemo(() => {
+    const active = groups.filter(g => !g.archived);
+    const saved = active.reduce((sum, g) => sum + (g.balance?.youAreOwed || 0), 0);
+    const friends = new Set();
+    active.forEach(g => {
+      (g.members || []).forEach(m => {
+        if (m.user?._id !== user?._id) friends.add(m.user?._id);
+      });
     });
-  });
+    return { activeGroups: active, totalSaved: saved, uniqueFriends: friends };
+  }, [groups, user?._id]);
 
   // Streak: days since account creation (capped at 30 for display)
-  const daysSince = user?.createdAt
-    ? Math.min(30, Math.floor((Date.now() - new Date(user.createdAt)) / 86400000))
-    : 1;
+  const daysSince = React.useMemo(() => {
+    if (!user?.createdAt) return 1;
+    return Math.min(30, Math.floor((Date.now() - new Date(user.createdAt)) / 86400000));
+  }, [user?.createdAt]);
 
   // Karma score: based on activity
-  const karmaScore = 500 + activeGroups.length * 50 + uniqueFriends.size * 20;
+  const karmaScore = React.useMemo(() => {
+    return 500 + activeGroups.length * 50 + uniqueFriends.size * 20;
+  }, [activeGroups.length, uniqueFriends.size]);
 
   // ─── Achievements ──────────────────────────────────────────────────────────
   const achievements = [

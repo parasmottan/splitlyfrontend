@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 const COLORS = [
   '#007AFF', '#FF3B30', '#34C759', '#FF9500', '#AF52DE',
@@ -23,7 +23,7 @@ function getInitials(name) {
   return parts[0].substring(0, 2).toUpperCase();
 }
 
-export default function Avatar({ name, size = 'md', style = {} }) {
+function Avatar({ name, size = 'md', style = {} }) {
   const sizeClass = size === 'sm' ? 'avatar-sm' : size === 'lg' ? 'avatar-lg' : size === 'xl' ? 'avatar-xl' : '';
 
   return (
@@ -35,3 +35,5 @@ export default function Avatar({ name, size = 'md', style = {} }) {
     </div>
   );
 }
+
+export default memo(Avatar);

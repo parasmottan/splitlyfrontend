@@ -9,7 +9,7 @@ import api from '../services/api';
 import SEO from '../components/SEO';
 
 // ─── Notification Panel ───────────────────────────────────────────────
-function NotificationPanel({ notifications, unreadCount, onClose, onMarkRead }) {
+const NotificationPanel = React.memo(function NotificationPanel({ notifications, unreadCount, onClose, onMarkRead }) {
   const formatTime = (dateStr) => {
     const date = new Date(dateStr);
     const now = new Date();
@@ -91,10 +91,10 @@ function NotificationPanel({ notifications, unreadCount, onClose, onMarkRead }) 
       </div>
     </div>
   );
-}
+});
 
 // ─── Request Money Modal ───────────────────────────────────────────────
-function RequestModal({ group, currentUser, onClose }) {
+const RequestModal = React.memo(function RequestModal({ group, currentUser, onClose }) {
   const [amounts, setAmounts] = useState({});
   const [sending, setSending] = useState({});
   const [sent, setSent] = useState({});
@@ -206,7 +206,7 @@ function RequestModal({ group, currentUser, onClose }) {
       </div>
     </div>
   );
-}
+});
 
 // ─── Group Card (horizontal scroll) ──────────────────────────────────
 const GROUP_BG_COLORS = [

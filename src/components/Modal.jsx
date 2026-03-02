@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export default function Modal({ show, icon, title, message, children, onClose, variant = 'alert' }) {
+function Modal({ show, icon, title, message, children, onClose, variant = 'alert' }) {
   if (!show) return null;
 
   const isSheet = variant === 'sheet';
@@ -33,3 +33,5 @@ export default function Modal({ show, icon, title, message, children, onClose, v
     </div>
   );
 }
+
+export default memo(Modal);

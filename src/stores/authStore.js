@@ -3,7 +3,7 @@ import api from '../services/api';
 
 const useAuthStore = create((set, get) => ({
   user: null,
-  loading: true,
+  loading: true, // Should always start as true to prevent flash
   error: null,
 
   initiateRegister: async (name, email, password) => {
@@ -88,15 +88,16 @@ const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      set({ loading: false, user: null });
+      set({ user: null, loading: false });
       return;
     }
     try {
+      set({ loading: true });
       const { data } = await api.get('/auth/me');
       set({ user: data.user, loading: false });
     } catch (error) {
-      set({ user: null, loading: false });
       localStorage.removeItem('accessToken');
+      set({ user: null, loading: false });
     }
   },
 
