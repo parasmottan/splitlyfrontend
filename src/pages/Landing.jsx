@@ -1,8 +1,33 @@
+import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { SplitlySymbol } from '../components/SplitlyLogo';
 
 export default function Landing() {
-  // ... existing refs and useEffect
+  const navigate = useNavigate();
+  const orbRef1 = useRef(null);
+  const orbRef2 = useRef(null);
+  const orbRef3 = useRef(null);
+
+  useEffect(() => {
+    let animationFrameId;
+    let t = 0;
+    const animate = () => {
+      t += 0.005;
+      if (orbRef1.current) {
+        orbRef1.current.style.transform = `translate(-50%, ${Math.sin(t) * 15}px)`;
+      }
+      if (orbRef2.current) {
+        orbRef2.current.style.transform = `translate(${Math.cos(t * 1.2) * 10}px, ${Math.sin(t * 1.5) * 10}px)`;
+      }
+      if (orbRef3.current) {
+        orbRef3.current.style.transform = `translate(${Math.sin(t * 1.3) * 8}px, ${Math.cos(t * 1.1) * 8}px)`;
+      }
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    animate();
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', alignItems: 'center',
