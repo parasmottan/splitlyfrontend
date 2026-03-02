@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { IoChevronBack, IoPeopleOutline } from 'react-icons/io5';
 import inviteService from '../services/inviteService';
 import useAuthStore from '../stores/authStore';
+import { AppSkeleton } from '../components/Skeletons';
 
 export default function JoinInvite() {
   const { token } = useParams();
@@ -45,7 +46,7 @@ export default function JoinInvite() {
     }
   };
 
-  if (loading) return <div className="loading-center"><div className="spinner"></div></div>;
+  if (loading) return <AppSkeleton />;
 
   return (
     <div className="page page-white" style={{ display: 'flex', flexDirection: 'column', padding: '0 20px', minHeight: '100dvh' }}>

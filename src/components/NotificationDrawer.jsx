@@ -50,7 +50,13 @@ export default function NotificationDrawer({ isOpen, onClose }) {
         </div>
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
-          {loading && <div className="loading-center"><div className="spinner"></div></div>}
+          {loading && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[1, 2, 3].map(i => (
+                <div key={i} className="skeleton-pulse" style={{ width: '100%', height: 72, borderRadius: 16 }}></div>
+              ))}
+            </div>
+          )}
 
           {!loading && notifications.length === 0 && (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)' }}>

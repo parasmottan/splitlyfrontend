@@ -7,6 +7,7 @@ import useAuthStore from '../stores/authStore';
 import inviteService from '../services/inviteService';
 import Avatar from '../components/Avatar';
 import Modal from '../components/Modal';
+import { SettingsSkeleton } from '../components/Skeletons';
 
 export default function GroupSettings() {
   const { id } = useParams();
@@ -32,7 +33,7 @@ export default function GroupSettings() {
   }, [id]);
 
   if (!activeGroup) {
-    return <div className="page"><div className="loading-center"><div className="spinner"></div></div></div>;
+    return <SettingsSkeleton />;
   }
 
   const g = activeGroup;

@@ -35,7 +35,7 @@ function timeAgo(dateStr) {
 /* ── Donut Ring Chart ─────────────────────────────── */
 const RING_COLORS = ['#6347F5', '#FFD60A', '#30D158', '#FF6B6B', '#5AC8FA', '#FF9F0A'];
 
-function DonutChart({ memberBalances, members, totalSpend, currSymbol, user }) {
+const DonutChart = memo(function DonutChart({ memberBalances, members, totalSpend, currSymbol, user }) {
   const R = 88, CX = 128, CY = 128, stroke = 18;
   const circumference = 2 * Math.PI * R;
 
@@ -123,7 +123,7 @@ function DonutChart({ memberBalances, members, totalSpend, currSymbol, user }) {
       })}
     </div>
   );
-}
+});
 
 /* ── Expense Item ─────────────────────────────────── */
 const ExpenseItem = memo(function ExpenseItem({ expense, userId, currSymbol, isLast }) {

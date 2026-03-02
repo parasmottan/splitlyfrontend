@@ -147,7 +147,7 @@ export default function AccountSettings() {
                 boxShadow: '0 0 0 4px rgba(99,71,245,0.15)',
               }}>
                 {user?.avatar
-                  ? <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                  ? <img src={user.avatar} alt={user.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                   : <PersonIllustration />
                 }
               </div>

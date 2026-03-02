@@ -158,7 +158,7 @@ export default function Account() {
               boxShadow: '0 8px 28px rgba(255,185,80,0.25)',
             }}>
               {user?.avatar
-                ? <img src={user.avatar} alt={user.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                ? <img src={user.avatar} alt={user.name} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
                 : <PersonIllustration size={100} />
               }
             </div>

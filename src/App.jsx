@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
 import { SplitlyLogoHorizontal } from './components/SplitlyLogo';
+import { AppSkeleton } from './components/Skeletons';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));
@@ -32,14 +33,14 @@ const TermsConditions = lazy(() => import('./pages/TermsConditions'));
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuthStore();
-  if (loading) return <div className="loading-center"><div className="spinner"></div></div>;
+  if (loading) return <AppSkeleton />;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuthStore();
-  if (loading) return <div className="loading-center"><div className="spinner"></div></div>;
+  if (loading) return <AppSkeleton />;
   if (user) return <Navigate to="/home" replace />;
   return children;
 }
@@ -62,7 +63,7 @@ export default function App() {
 
       {/* App container */}
       <div className="app-container">
-        <Suspense fallback={<div className="loading-center"><div className="spinner"></div></div>}>
+        <Suspense fallback={<AppSkeleton />}>
           <Routes>
             {/* Public */}
             <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />

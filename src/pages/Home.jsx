@@ -217,7 +217,7 @@ const GROUP_BG_COLORS = [
   ['#8B3A9E', '#5C2266'],
 ];
 
-function GroupScrollCard({ group, onClick }) {
+const GroupScrollCard = React.memo(function GroupScrollCard({ group, onClick }) {
   const charCode = group._id?.charCodeAt(0) || 0;
   const [from, to] = GROUP_BG_COLORS[charCode % GROUP_BG_COLORS.length];
   return (
@@ -253,10 +253,10 @@ function GroupScrollCard({ group, onClick }) {
       </div>
     </div>
   );
-}
+});
 
 // ─── Main Activity Item ───────────────────────────────────────────────
-function ActivityRow({ item }) {
+const ActivityRow = React.memo(function ActivityRow({ item }) {
   const isPositive = item.amount > 0;
   const CATEGORY_ICONS = {
     food: { emoji: '🍔', bg: 'rgba(255,149,0,0.15)', color: '#FF9500' },
@@ -310,7 +310,7 @@ function ActivityRow({ item }) {
       </div>
     </div>
   );
-}
+});
 
 // ─── Main Home Page ────────────────────────────────────────────────────
 export default function Home() {

@@ -110,10 +110,12 @@ textarea {
 .page {
   padding: 0 20px 84px 20px;
   min-height: 100dvh;
+  animation: simpleFade 250ms ease-out forwards;
 }
 
 .page-white {
   background: var(--white);
+  animation: simpleFade 250ms ease-out forwards;
 }
 
 /* ======= Apple HIG Typography ======= */
@@ -636,28 +638,7 @@ textarea {
   color: var(--blue);
 }
 
-/* ======= Loading ======= */
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--gray-200);
-  border-top-color: var(--blue);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.loading-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-}
+/* ======= Removed Loaders (Using Skeleton-Pulse instead) ======= */
 
 /* ======= Empty State ======= */
 .empty-state {
@@ -849,6 +830,20 @@ textarea {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes simpleFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.page-enter {
+  animation: simpleFade 250ms ease-out forwards;
 }
 
 @keyframes slideUp {
