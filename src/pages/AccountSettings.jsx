@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
 import api from '../services/api';
@@ -65,6 +65,7 @@ export default function AccountSettings() {
   const { user, setUser, logout } = useAuthStore();
 
   const [name, setName] = useState(user?.name || '');
+  const [upiId, setUpiId] = useState('');
   const [currentPw, setCurrentPw] = useState('');
   const [newPw, setNewPw] = useState('');
   const [confirmPw, setConfirmPw] = useState('');
@@ -72,6 +73,14 @@ export default function AccountSettings() {
   const [showDelete, setShowDelete] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [toast, setToast] = useState(null);
+
+  // Load full profile including upiId on mount
+  useEffect(() => {
+    api.get('/user/me-full').then(({ data }) => {
+      if (data.user?.name) setName(data.user.name);
+      if (data.user?.upiId !== undefined) setUpiId(data.user.upiId);
+    }).catch(() => { });
+  }, []);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -82,8 +91,8 @@ export default function AccountSettings() {
     if (!name.trim()) return showToast('Name cannot be empty', 'error');
     setSaving(true);
     try {
-      // Save profile
-      const { data } = await api.patch('/user/profile', { name });
+      // Save profile (name + upiId)
+      const { data } = await api.patch('/user/profile', { name, upiId });
       setUser(data.user);
 
       // Also change password if filled
@@ -178,13 +187,30 @@ export default function AccountSettings() {
           </div>
 
           {/* Email */}
-          <div>
+          <div style={{ marginBottom: 16 }}>
             <label style={LABEL}>Email Address</label>
             <input
               value={user?.email || ''}
               readOnly
               style={{ ...INPUT, color: '#8E8E93', cursor: 'not-allowed' }}
             />
+          </div>
+
+          {/* UPI ID */}
+          <div>
+            <label style={LABEL}>UPI ID</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                value={upiId}
+                onChange={e => setUpiId(e.target.value)}
+                style={{ ...INPUT, paddingRight: 48 }}
+                placeholder="yourname@upi"
+                autoComplete="off"
+                autoCapitalize="none"
+              />
+              <span style={{ position: 'absolute', right: 18, top: '50%', transform: 'translateY(-50%)', fontSize: 18 }}>💳</span>
+            </div>
+            <p style={{ fontSize: 12, color: '#8E8E93', margin: '6px 0 0 12px' }}>Others will pay you via this UPI ID</p>
           </div>
         </div>
 

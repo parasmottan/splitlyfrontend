@@ -1,29 +1,52 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoChevronBack } from 'react-icons/io5';
 import useSettlementStore from '../stores/settlementStore';
 import useGroupStore from '../stores/groupStore';
+import useAuthStore from '../stores/authStore';
 import Avatar from '../components/Avatar';
 import Modal from '../components/Modal';
 import Skeleton from '../components/Skeleton';
+import UpiQrModal from '../components/UpiQrModal';
+
+/* Detect mobile vs desktop for UPI deep-link vs QR fallback */
+const isMobileDevice = () => /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+/* Build a safe UPI deep link */
+function buildUpiLink({ upiId, amount, name }) {
+  const note = encodeURIComponent('Splitly Settlement');
+  const pn = encodeURIComponent(name || 'Splitly');
+  return `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${pn}&am=${Number(amount).toFixed(2)}&cu=INR&tn=${note}`;
+}
 
 export default function Settlement() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { settlementData, loading, fetchSettlements, settleAll, settleSingle } = useSettlementStore();
+  const { settlementData, loading, fetchSettlements, settleAll, settleSingle, getUpiDetails } = useSettlementStore();
   const { fetchGroup } = useGroupStore();
+  const { user } = useAuthStore();
+
+  // Settle-all modal
   const [showSettleModal, setShowSettleModal] = useState(false);
   const [settling, setSettling] = useState(false);
+
+  // Per-transfer UPI state
+  // upiState[transferIndex] = { phase: 'idle'|'loading'|'awaiting'|'done', error, upiData }
+  const [upiState, setUpiState] = useState({});
+
+  // QR modal state (desktop only)
+  const [qrModal, setQrModal] = useState(null); // { upiLink, amount, receiver, transferIdx }
+  const [qrSettling, setQrSettling] = useState(false);
 
   useEffect(() => {
     fetchSettlements(id);
   }, [id]);
 
+  /* ── Settle All ── */
   const handleSettleAll = useCallback(async () => {
     setSettling(true);
     try {
       await settleAll(id);
-      const updatedGroup = await fetchGroup(id);
+      await fetchGroup(id);
       navigate(`/groups/${id}/settled`, {
         replace: true,
         state: {
@@ -35,15 +58,63 @@ export default function Settlement() {
     setSettling(false);
   }, [id, settleAll, fetchGroup, navigate, settlementData]);
 
+  /* ── Pay via UPI (per transfer) ── */
+  const handleUpiPay = useCallback(async (transfer, idx) => {
+    // Set loading state for this transfer
+    setUpiState(s => ({ ...s, [idx]: { phase: 'loading', error: null, upiData: null } }));
 
-  const handleSettleSingle = useCallback(async (transfer) => {
+    try {
+      const upiData = await getUpiDetails(id, transfer.to._id);
+      const upiLink = buildUpiLink({ upiId: upiData.upiId, amount: upiData.amount, name: upiData.receiverName });
+
+      if (isMobileDevice()) {
+        // Mobile: redirect to UPI app, then show "Mark as Settled" button
+        window.location.href = upiLink;
+        // After returning (or after a brief moment), show the awaiting state
+        setTimeout(() => {
+          setUpiState(s => ({ ...s, [idx]: { phase: 'awaiting', error: null, upiData } }));
+        }, 1500);
+      } else {
+        // Desktop: show QR modal
+        setQrModal({ upiLink, amount: upiData.amount, receiver: upiData.receiverName, transferIdx: idx, transfer });
+        setUpiState(s => ({ ...s, [idx]: { phase: 'idle', error: null, upiData } }));
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || err.message || 'Failed to get UPI details';
+      setUpiState(s => ({ ...s, [idx]: { phase: 'idle', error: msg, upiData: null } }));
+    }
+  }, [id, getUpiDetails]);
+
+  /* ── Mark as Settled (single transfer, after UPI) ── */
+  const handleMarkSettled = useCallback(async (transfer, idx) => {
+    setUpiState(s => ({ ...s, [idx]: { ...s[idx], phase: 'loading' } }));
     try {
       await settleSingle(id, { fromUser: transfer.from._id, toUser: transfer.to._id, amount: transfer.amount });
-      fetchSettlements(id);
-      fetchGroup(id);
-    } catch (err) { }
+      await fetchSettlements(id);
+      await fetchGroup(id);
+      setUpiState(s => ({ ...s, [idx]: { phase: 'done', error: null, upiData: null } }));
+    } catch (err) {
+      setUpiState(s => ({ ...s, [idx]: { ...s[idx], phase: 'awaiting', error: 'Failed to mark settled' } }));
+    }
   }, [id, settleSingle, fetchSettlements, fetchGroup]);
 
+  /* ── Mark as Settled from QR modal ── */
+  const handleQrSettle = useCallback(async () => {
+    if (!qrModal) return;
+    const { transfer, transferIdx } = qrModal;
+    setQrSettling(true);
+    try {
+      await settleSingle(id, { fromUser: transfer.from._id, toUser: transfer.to._id, amount: transfer.amount });
+      await fetchSettlements(id);
+      await fetchGroup(id);
+      setQrModal(null);
+    } catch (err) {
+      // keep modal open on error
+    }
+    setQrSettling(false);
+  }, [qrModal, id, settleSingle, fetchSettlements, fetchGroup]);
+
+  /* ── Loading skeleton ── */
   if (loading && !settlementData) {
     return (
       <div style={{ background: '#fff', minHeight: '100dvh', padding: '0 24px' }}>
@@ -70,7 +141,7 @@ export default function Settlement() {
   }
 
   const data = settlementData;
-  const currSymbol = data?.currencySymbol || '$';
+  const currSymbol = data?.currencySymbol || '₹';
 
   return (
     <div style={{ background: '#fff', minHeight: '100dvh', display: 'flex', flexDirection: 'column' }}>
@@ -105,25 +176,118 @@ export default function Settlement() {
         </div>
 
         {data?.transfers?.length > 0 ? (
-          data.transfers.map((transfer, i) => (
-            <div key={i} style={{
-              background: '#F9F9FB', borderRadius: '20px', padding: '16px',
-              marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '14px',
-            }}>
-              <Avatar name={transfer.from.name} size="md" style={{ width: '48px', height: '48px', fontSize: '17px', position: 'relative' }} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: '17px', fontWeight: '700', color: '#1C1C1E', margin: '0 0 3px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {transfer.from.name?.split(' ')[0] || 'Person'}
-                </p>
-                <p style={{ fontSize: '13px', color: '#8E8E93', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {transfer.to.name} • {Math.ceil(Math.random() * 3)} items
-                </p>
+          data.transfers.map((transfer, i) => {
+            const isMyDebt = transfer.from._id === user?._id;
+            const state = upiState[i] || { phase: 'idle', error: null };
+
+            return (
+              <div key={i} style={{
+                background: '#F9F9FB', borderRadius: '20px', padding: '16px',
+                marginBottom: '10px',
+              }}>
+                {/* Transfer row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <Avatar name={transfer.from.name} style={{ width: '48px', height: '48px', fontSize: '17px', flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '16px', fontWeight: '700', color: '#1C1C1E', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {transfer.from.name?.split(' ')[0] || 'Person'}
+                      <span style={{ fontWeight: '400', color: '#8E8E93' }}> → </span>
+                      {transfer.to.name?.split(' ')[0] || 'Person'}
+                    </p>
+                    <p style={{ fontSize: '13px', color: '#8E8E93', margin: 0 }}>
+                      {isMyDebt ? 'You owe' : `${transfer.from.name?.split(' ')[0]} owes`} {currSymbol}{transfer.amount.toFixed(2)}
+                    </p>
+                  </div>
+                  <span style={{ fontSize: '17px', fontWeight: '700', color: isMyDebt ? '#FF3B30' : '#34C759', flexShrink: 0 }}>
+                    {isMyDebt ? '-' : '+'}{currSymbol}{transfer.amount.toFixed(2)}
+                  </span>
+                </div>
+
+                {/* Error banner */}
+                {state.error && (
+                  <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(255,59,48,0.08)', borderRadius: 10, fontSize: 13, color: '#FF3B30', fontWeight: '500' }}>
+                    ⚠️ {state.error}
+                  </div>
+                )}
+
+                {/* Per-transfer action — only shown for debts the current user owes */}
+                {isMyDebt && state.phase !== 'done' && (
+                  <div style={{ marginTop: 12 }}>
+                    {state.phase === 'awaiting' ? (
+                      /* Post-UPI redirect: show "Mark as Settled" */
+                      <div>
+                        <p style={{ fontSize: 12, color: '#8E8E93', textAlign: 'center', marginBottom: 8 }}>
+                          Payment done? Confirm to update the group balance.
+                        </p>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            onClick={() => handleMarkSettled(transfer, i)}
+                            disabled={state.phase === 'loading'}
+                            style={{
+                              flex: 1, padding: '11px', fontSize: 14, fontWeight: '700',
+                              background: 'linear-gradient(135deg, #34C759 0%, #28A745 100%)',
+                              color: '#fff', border: 'none', borderRadius: 100, cursor: 'pointer',
+                              boxShadow: '0 4px 14px rgba(52,199,89,0.3)',
+                              opacity: state.phase === 'loading' ? 0.7 : 1,
+                            }}
+                          >
+                            ✓ Mark as Settled
+                          </button>
+                          <button
+                            onClick={() => setUpiState(s => ({ ...s, [i]: { phase: 'idle', error: null } }))}
+                            style={{
+                              padding: '11px 16px', fontSize: 14, fontWeight: '600',
+                              background: '#fff', color: '#8E8E93', border: '1px solid #E5E5EA',
+                              borderRadius: 100, cursor: 'pointer',
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Idle / loading: show Pay via UPI */
+                      <button
+                        onClick={() => handleUpiPay(transfer, i)}
+                        disabled={state.phase === 'loading'}
+                        style={{
+                          width: '100%', padding: '12px',
+                          background: state.phase === 'loading'
+                            ? 'rgba(99,71,245,0.08)'
+                            : 'linear-gradient(135deg, #6347F5 0%, #4B32CC 100%)',
+                          color: state.phase === 'loading' ? '#6347F5' : '#fff',
+                          fontSize: 14, fontWeight: '700',
+                          border: state.phase === 'loading' ? '1.5px solid rgba(99,71,245,0.2)' : 'none',
+                          borderRadius: 100, cursor: state.phase === 'loading' ? 'default' : 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                          transition: 'all 200ms',
+                        }}
+                      >
+                        {state.phase === 'loading' ? (
+                          <>
+                            <span style={{ fontSize: 13 }}>Verifying amount...</span>
+                            <div style={{ width: 14, height: 14, border: '2px solid #6347F5', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                          </>
+                        ) : (
+                          <>
+                            <span>Pay via UPI</span>
+                            <span style={{ fontSize: 16 }}>💸</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Done badge */}
+                {state.phase === 'done' && (
+                  <div style={{ marginTop: 10, textAlign: 'center', fontSize: 13, fontWeight: '700', color: '#34C759' }}>
+                    ✓ Marked as Settled
+                  </div>
+                )}
               </div>
-              <span style={{ fontSize: '17px', fontWeight: '700', color: '#FF3B30', flexShrink: 0 }}>
-                -{currSymbol}{transfer.amount.toFixed(2)}
-              </span>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div style={{ textAlign: 'center', padding: '40px 0', color: '#8E8E93', fontSize: '17px' }}>
             🎉 All settled!
@@ -155,7 +319,7 @@ export default function Settlement() {
         </div>
       )}
 
-      {/* Confirm Modal */}
+      {/* Confirm Settle-All Modal */}
       <Modal
         show={showSettleModal}
         title="Settle All?"
@@ -171,6 +335,25 @@ export default function Settlement() {
           </button>
         </div>
       </Modal>
+
+      {/* Desktop QR Modal */}
+      {qrModal && (
+        <UpiQrModal
+          upiLink={qrModal.upiLink}
+          amount={qrModal.amount}
+          receiver={qrModal.receiver}
+          onClose={() => setQrModal(null)}
+          onSettle={handleQrSettle}
+          settling={qrSettling}
+        />
+      )}
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

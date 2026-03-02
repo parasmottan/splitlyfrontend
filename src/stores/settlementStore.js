@@ -39,6 +39,12 @@ const useSettlementStore = create((set) => ({
     }
   },
 
+  // Get server-validated UPI payment details for a specific transfer
+  getUpiDetails: async (groupId, toUserId) => {
+    const { data } = await api.get(`/settlements/${groupId}/upi-details/${toUserId}`);
+    return data; // { amount, upiId, receiverName }
+  },
+
   clearSettlements: () => set({ settlementData: null, error: null })
 }));
 
