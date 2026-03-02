@@ -5,6 +5,21 @@ import useAuthStore from '../stores/authStore';
 import BottomNav from '../components/BottomNav';
 import Skeleton from '../components/Skeleton';
 
+const CATEGORY_MAP = {
+  food: '🍕',
+  transport: '🚗',
+  groceries: '🛒',
+  entertainment: '🎬',
+  utilities: '💡',
+  rent: '🏠',
+  travel: '✈️',
+  shopping: '🛍️',
+  drinks: '🍺',
+  other: '💸',
+};
+
+const getCategoryEmoji = (category) => CATEGORY_MAP[category] || '💸';
+
 export default function Activity() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
