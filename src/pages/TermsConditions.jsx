@@ -3,38 +3,53 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 
 const PAGE_BG = '#EAEAF5';
-const CARD = { background: '#fff', borderRadius: 20, padding: '20px 20px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginBottom: 14 };
-const H2 = { fontSize: 16, fontWeight: '800', color: '#1C1C1E', marginBottom: 10, marginTop: 0 };
-const P = { fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: '0 0 8px' };
 
 const sections = [
   {
-    title: '1. Acceptance of Terms',
-    content: 'By accessing or using Splitly, you confirm that you are at least 13 years of age and agree to be bound by these Terms & Conditions. If you do not agree with any part of these terms, you must discontinue use of the application immediately.',
+    icon: (
+      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(99,71,245,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="#6347F5" strokeWidth="2" strokeLinejoin="round" />
+        </svg>
+      </div>
+    ),
+    title: 'Acceptance of Terms',
+    body: 'By creating an account, you confirm that you are at least 13 years old and have the legal capacity to enter into binding contracts.',
   },
   {
-    title: '2. Use of Platform',
-    content: 'Splitly is a personal expense-splitting and group finance management tool. You agree to use it only for lawful purposes and in a manner that does not infringe on the rights of others. You must not misuse the platform, attempt to gain unauthorized access, or introduce malicious code of any kind.',
+    icon: (
+      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(99,71,245,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="#6347F5" stroke="#6347F5" strokeWidth="1.5" strokeLinejoin="round" />
+        </svg>
+      </div>
+    ),
+    title: 'Use of Platform',
+    body: 'You agree to use Splitly only for lawful purposes. You are responsible for all activity that occurs under your account credentials.',
   },
   {
-    title: '3. Financial Disclaimer',
-    content: 'Splitly is NOT a payment processor, bank, or financial institution. We do not process, hold, or transfer money. All financial settlements between users happen independently outside the platform via third-party services (UPI, bank transfers, cash, etc.). Splitly only tracks and displays expense records as entered by users. We are not responsible for incorrect records or disputes between users.',
+    icon: (
+      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(52,199,89,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="6" width="20" height="14" rx="2" stroke="#34C759" strokeWidth="2" />
+          <path d="M2 10h20" stroke="#34C759" strokeWidth="2" />
+          <circle cx="7" cy="15" r="1.5" fill="#34C759" />
+        </svg>
+      </div>
+    ),
+    title: 'Financial Disclaimer',
+    body: 'Splitly is not a bank. Funds are held by our licensed banking partners. We do not provide financial advice. Gamification rewards have no cash value unless explicitly stated.',
   },
   {
-    title: '4. Account Responsibility',
-    content: 'You are responsible for maintaining the security of your account credentials. Do not share your password with anyone. You are responsible for all activity that occurs under your account. Notify us immediately at noreplysplitly@gmail.com if you suspect unauthorized access.',
-  },
-  {
-    title: '5. User Content',
-    content: 'You retain ownership of any data you enter into Splitly (expense names, amounts, group names). By using the service, you grant us a limited license to store and display that data to provide the service. You must not input false, defamatory, or harmful information.',
-  },
-  {
-    title: '6. Limitation of Liability',
-    content: 'Splitly is provided "as is" without any warranties. To the maximum extent permitted by law, we are not liable for any indirect, incidental, or consequential damages arising from your use of the platform, including loss of data, financial disputes between users, or service interruptions.',
-  },
-  {
-    title: '7. Modifications',
-    content: 'We reserve the right to modify these Terms at any time. Continued use of the platform after changes constitutes acceptance of the updated terms. We will make reasonable efforts to notify users of significant changes via email or in-app notification.',
+    icon: (
+      <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,59,48,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#FF3B30" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+        </svg>
+      </div>
+    ),
+    title: 'Limitation of Liability',
+    body: 'To the maximum extent permitted by law, Splitly shall not be liable for any indirect, incidental, or consequential damages resulting from your use of the service.',
   },
 ];
 
@@ -50,63 +65,87 @@ export default function TermsConditions() {
       />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ width: 38, height: 38, borderRadius: '50%', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', flexShrink: 0 }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32 }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <h1 style={{ fontSize: 20, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Terms & Conditions</h1>
+        <h1 style={{ flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '700', color: '#1C1C1E', margin: 0, marginRight: 32 }}>Terms &amp; Conditions</h1>
       </div>
 
-      <div style={{ padding: '4px 20px 60px' }}>
+      <div style={{ padding: '0 20px 60px' }}>
 
-        <p style={{ fontSize: 12, color: '#8E8E93', marginBottom: 16, fontWeight: '500' }}>
-          Last updated: March 2026
-        </p>
-
-        {/* ⚠️ Development notice */}
+        {/* Active Development banner — orange */}
         <div style={{
-          background: 'rgba(99,71,245,0.06)',
-          border: '1.5px solid rgba(99,71,245,0.25)',
-          borderRadius: 18, padding: '16px 18px', marginBottom: 18,
+          background: 'rgba(255,149,0,0.08)',
+          border: '1.5px solid rgba(255,149,0,0.4)',
+          borderRadius: 18, padding: '14px 16px', marginBottom: 16,
+          display: 'flex', alignItems: 'flex-start', gap: 10,
         }}>
-          <p style={{ fontSize: 14, fontWeight: '800', color: '#6347F5', margin: '0 0 8px' }}>⚠️ Active Development Notice</p>
+          <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>🔧</span>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: '800', color: '#FF9500', margin: '0 0 5px' }}>Active Development</p>
+            <p style={{ fontSize: 13, color: '#3C3C43', lineHeight: 1.55, margin: 0 }}>
+              Splitly is currently in beta. These terms may be updated frequently as we roll out new features.
+            </p>
+          </div>
+        </div>
+
+        {/* Last updated card */}
+        <div style={{ background: '#fff', borderRadius: 18, padding: '16px 18px', marginBottom: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
+          <p style={{ fontSize: 14, color: '#1C1C1E', margin: '0 0 8px' }}>
+            Last updated: <strong>October 24, 2023</strong>
+          </p>
           <p style={{ fontSize: 13, color: '#3C3C43', lineHeight: 1.6, margin: 0 }}>
-            Splitly is currently under active development. Some major and minor features may be incomplete, temporarily unavailable, or subject to change. By using this app you acknowledge that it is still evolving and agree that we are not liable for any issues arising from features that are in development.
+            Please read these terms carefully before using the Splitly platform. By accessing or using our service, you agree to be bound by these terms.
           </p>
         </div>
 
-        {sections.map((sec) => (
-          <div key={sec.title} style={CARD}>
-            <h2 style={H2}>{sec.title}</h2>
-            <p style={{ ...P, marginBottom: 0 }}>{sec.content}</p>
-          </div>
-        ))}
+        {/* Sections */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {sections.map(sec => (
+            <div key={sec.title} style={{ background: '#fff', borderRadius: 20, padding: '18px 18px', boxShadow: '0 2px 10px rgba(0,0,0,0.04)', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+              {sec.icon}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 16, fontWeight: '800', color: '#1C1C1E', margin: '0 0 8px' }}>{sec.title}</p>
+                <p style={{ fontSize: 13, color: '#3C3C43', lineHeight: 1.65, margin: 0 }}>{sec.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-        {/* Support */}
-        <div style={{ ...CARD, background: 'rgba(99,71,245,0.06)', border: '1.5px solid rgba(99,71,245,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 28, marginBottom: 10 }}>📩</div>
-          <p style={{ fontSize: 14, fontWeight: '700', color: '#1C1C1E', marginBottom: 8 }}>Legal Questions?</p>
+        {/* Footer CTA */}
+        <div style={{ textAlign: 'center', padding: '36px 8px 0' }}>
+          <p style={{ fontSize: 20, fontWeight: '800', color: '#1C1C1E', margin: '0 0 10px' }}>Questions?</p>
+          <p style={{ fontSize: 14, color: '#8E8E93', margin: '0 0 20px', lineHeight: 1.55 }}>
+            If you have any questions about these Terms, please contact us at:
+          </p>
           <a
-            href="mailto:noreplysplitly@gmail.com"
-            style={{ fontSize: 15, fontWeight: '800', color: '#6347F5', textDecoration: 'none' }}
+            href="mailto:legal@splitly.app"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: '#6347F5', borderRadius: 100, padding: '13px 26px',
+              textDecoration: 'none', fontSize: 15, fontWeight: '700', color: '#fff',
+            }}
           >
-            noreplysplitly@gmail.com
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="4" width="20" height="16" rx="3" stroke="#fff" strokeWidth="2" />
+              <path d="M2 7l10 7 10-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            legal@splitly.app
           </a>
         </div>
 
-        {/* Developer credit */}
-        <div style={{ marginTop: 48, paddingTop: 20, borderTop: '1px solid rgba(99,71,245,0.15)', textAlign: 'center' }}>
-          <p style={{ fontSize: 12, color: '#C7C7CC', margin: '0 0 3px', letterSpacing: '0.3px' }}>Developed by</p>
-          <p style={{ fontSize: 13, fontWeight: '700', color: '#6347F5', margin: 0, opacity: 0.75 }}>
-            codexcoder <span style={{ color: '#8E8E93', fontWeight: '500' }}>(parasmottan)</span>
+        {/* Dev credit */}
+        <div style={{ marginTop: 40, textAlign: 'center' }}>
+          <p style={{ fontSize: 11, color: '#AEAEB2', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: '600', margin: 0 }}>
+            Developed by codexcoder
           </p>
         </div>
-
       </div>
     </div>
   );

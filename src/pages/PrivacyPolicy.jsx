@@ -3,40 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 
 const PAGE_BG = '#EAEAF5';
-const CARD = { background: '#fff', borderRadius: 20, padding: '20px 20px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginBottom: 14 };
-const H2 = { fontSize: 16, fontWeight: '800', color: '#1C1C1E', marginBottom: 10, marginTop: 0 };
-const P = { fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: '0 0 10px' };
-
-const sections = [
-  {
-    title: 'Introduction',
-    content: 'Welcome to Splitly ("we", "our", "us"). We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our mobile application and services.',
-  },
-  {
-    title: 'Data We Collect',
-    content: 'We collect information you provide directly: your name, email address, and password when you register. We also collect activity data including expenses, group memberships, and settlement records that you create within the app. We do not collect payment card details.',
-  },
-  {
-    title: 'How We Use Your Data',
-    content: 'We use your information to: operate and maintain your account, process and display group expenses, calculate and simplify debts, send notification emails (such as OTP verification and settlement reminders), and improve our services. We do not sell your personal data to third parties.',
-  },
-  {
-    title: 'Data Security',
-    content: 'Your password is hashed using bcrypt with a salt factor of 12 before storage — we never store it in plain text. API access is protected by short-lived JWT access tokens and long-lived refresh tokens stored in HTTP-only cookies. All data is stored on MongoDB Atlas with encryption at rest.',
-  },
-  {
-    title: 'Third-Party Services',
-    content: 'Splitly uses the following third-party services: MongoDB Atlas (database hosting), Zeabur (backend hosting), Vercel (frontend hosting), and Nodemailer via Gmail SMTP (email delivery). Each of these services has their own privacy policies and data handling practices.',
-  },
-  {
-    title: 'Data Retention',
-    content: 'We retain your personal data for as long as your account is active. You may delete your account at any time from Account → Settings, which permanently removes your profile and removes you from all groups. Some anonymized aggregate data may be retained for 30 days after deletion.',
-  },
-  {
-    title: 'Contact',
-    content: 'If you have any questions about this Privacy Policy or how your data is handled, please contact us.',
-  },
-];
 
 export default function PrivacyPolicy() {
   const navigate = useNavigate();
@@ -50,65 +16,130 @@ export default function PrivacyPolicy() {
       />
 
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ width: 38, height: 38, borderRadius: '50%', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', flexShrink: 0 }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32 }}
         >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
-        <h1 style={{ fontSize: 20, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Privacy Policy</h1>
+        <h1 style={{ flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '700', color: '#1C1C1E', margin: 0, marginRight: 32 }}>Privacy Policy</h1>
       </div>
 
-      <div style={{ padding: '4px 20px 60px' }}>
+      <div style={{ padding: '0 20px 60px' }}>
 
-        {/* Last updated */}
-        <p style={{ fontSize: 12, color: '#8E8E93', marginBottom: 16, fontWeight: '500' }}>
-          Last updated: March 2026
-        </p>
-
-        {/* ⚠️ Development notice */}
+        {/* Active Development banner */}
         <div style={{
           background: 'rgba(99,71,245,0.06)',
-          border: '1.5px solid rgba(99,71,245,0.25)',
-          borderRadius: 18, padding: '16px 18px', marginBottom: 18,
+          border: '1.5px solid rgba(99,71,245,0.3)',
+          borderRadius: 18, padding: '14px 16px', marginBottom: 24,
+          display: 'flex', alignItems: 'flex-start', gap: 10,
         }}>
-          <p style={{ fontSize: 14, fontWeight: '800', color: '#6347F5', margin: '0 0 8px' }}>⚠️ Active Development Notice</p>
-          <p style={{ fontSize: 13, color: '#3C3C43', lineHeight: 1.6, margin: 0 }}>
-            Splitly is currently under active development. Some major and minor features may be incomplete, temporarily unavailable, or updated soon. By using the app, users acknowledge that the platform is still evolving and improvements are ongoing.
+          <span style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>🔧</span>
+          <div>
+            <p style={{ fontSize: 11, fontWeight: '800', color: '#6347F5', margin: '0 0 5px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Active Development</p>
+            <p style={{ fontSize: 13, color: '#3C3C43', lineHeight: 1.55, margin: 0 }}>
+              Splitly is currently in beta. Our privacy practices are evolving as we add new features. Last updated: Oct 2023.
+            </p>
+          </div>
+        </div>
+
+        {/* Introduction */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 22, borderRadius: 2, background: '#6347F5', flexShrink: 0 }} />
+            <h2 style={{ fontSize: 18, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Introduction</h2>
+          </div>
+          <p style={{ fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: 0 }}>
+            At Splitly, we believe transparency is the new currency. This policy outlines how we handle your personal information when you use our gamified money-sharing platform. By using Splitly, you trust us with your data, and we take that responsibility seriously.
           </p>
         </div>
 
-        {/* Sections */}
-        {sections.map((sec) => (
-          <div key={sec.title} style={CARD}>
-            <h2 style={H2}>{sec.title}</h2>
-            <p style={{ ...P, marginBottom: 0 }}>{sec.content}</p>
+        {/* Data Collection */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 22, borderRadius: 2, background: '#FF3B30', flexShrink: 0 }} />
+            <h2 style={{ fontSize: 18, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Data Collection</h2>
           </div>
-        ))}
+          <p style={{ fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: '0 0 12px' }}>
+            We collect information you provide directly, such as your user profile, transaction details, and social connections within the app.
+          </p>
+          <ul style={{ paddingLeft: 18, margin: 0 }}>
+            {[
+              'Account information (Name, Email, Avatar)',
+              'Financial transaction metadata',
+              'Device and usage information',
+            ].map(item => (
+              <li key={item} style={{ fontSize: 14, color: '#3C3C43', lineHeight: 1.8 }}>{item}</li>
+            ))}
+          </ul>
+        </div>
 
-        {/* Support email */}
-        <div style={{ ...CARD, background: 'rgba(99,71,245,0.06)', border: '1.5px solid rgba(99,71,245,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '24px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: 28, marginBottom: 10 }}>📩</div>
-          <p style={{ fontSize: 14, fontWeight: '700', color: '#1C1C1E', marginBottom: 8 }}>Privacy Questions?</p>
+        {/* Usage */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 22, borderRadius: 2, background: '#FF3B30', flexShrink: 0 }} />
+            <h2 style={{ fontSize: 18, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Usage</h2>
+          </div>
+          <p style={{ fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: '0 0 16px' }}>
+            Your data fuels the gamification engine, helping us calculate your Karma Score and track streak achievements. We do not sell your personal data to third-party advertisers. We use your information to:
+          </p>
+          {[
+            { icon: '🛡️', text: 'Verify your identity' },
+            { icon: '⚡', text: 'Process rapid transactions' },
+            { icon: '🏆', text: 'Award achievements & badges' },
+          ].map(row => (
+            <div key={row.text} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(99,71,245,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}>
+                {row.icon}
+              </div>
+              <span style={{ fontSize: 14, color: '#3C3C43', fontWeight: '500' }}>{row.text}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Security */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+            <div style={{ width: 4, height: 22, borderRadius: 2, background: '#34C759', flexShrink: 0 }} />
+            <h2 style={{ fontSize: 18, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Security</h2>
+          </div>
+          <p style={{ fontSize: 14, color: '#3C3C43', lineHeight: 1.7, margin: 0 }}>
+            We implement industry-standard encryption for data in transit and at rest. While no service is 100% secure, we continuously monitor our systems for potential vulnerabilities to keep your financial data safe.
+          </p>
+        </div>
+
+        {/* Footer CTA */}
+        <div style={{ textAlign: 'center', padding: '32px 16px 0', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+          <p style={{ fontSize: 17, fontWeight: '700', color: '#1C1C1E', margin: '0 0 8px' }}>Have questions about your privacy?</p>
+          <p style={{ fontSize: 14, color: '#8E8E93', margin: '0 0 20px', lineHeight: 1.5 }}>
+            Our support team is available to help clarify any concerns regarding your data.
+          </p>
           <a
             href="mailto:noreplysplitly@gmail.com"
-            style={{ fontSize: 15, fontWeight: '800', color: '#6347F5', textDecoration: 'none' }}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              background: '#fff', border: '1.5px solid rgba(99,71,245,0.25)',
+              borderRadius: 100, padding: '12px 24px', textDecoration: 'none',
+              fontSize: 15, fontWeight: '700', color: '#6347F5',
+            }}
           >
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="4" width="20" height="16" rx="3" stroke="#6347F5" strokeWidth="2" />
+              <path d="M2 7l10 7 10-7" stroke="#6347F5" strokeWidth="2" strokeLinecap="round" />
+            </svg>
             noreplysplitly@gmail.com
           </a>
         </div>
 
-        {/* Developer credit */}
-        <div style={{ marginTop: 48, paddingTop: 20, borderTop: '1px solid rgba(99,71,245,0.15)', textAlign: 'center' }}>
-          <p style={{ fontSize: 12, color: '#C7C7CC', margin: '0 0 3px', letterSpacing: '0.3px' }}>Developed by</p>
-          <p style={{ fontSize: 13, fontWeight: '700', color: '#6347F5', margin: 0, opacity: 0.75 }}>
-            codexcoder <span style={{ color: '#8E8E93', fontWeight: '500' }}>(parasmottan)</span>
+        {/* Dev credit */}
+        <div style={{ marginTop: 40, textAlign: 'center' }}>
+          <p style={{ fontSize: 11, color: '#AEAEB2', letterSpacing: '1px', textTransform: 'uppercase', fontWeight: '600', margin: 0 }}>
+            Developed by codexcoder
           </p>
         </div>
-
       </div>
     </div>
   );

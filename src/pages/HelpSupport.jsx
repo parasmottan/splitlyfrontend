@@ -4,10 +4,6 @@ import api from '../services/api';
 import SEO from '../components/SEO';
 
 const PAGE_BG = '#EAEAF5';
-const CARD_STYLE = { background: '#fff', borderRadius: 20, boxShadow: '0 2px 10px rgba(0,0,0,0.05)', marginBottom: 12, overflow: 'hidden' };
-const INPUT_STYLE = { width: '100%', padding: '13px 14px', border: '1.5px solid #E5E5EA', borderRadius: 12, fontSize: 15, color: '#1C1C1E', background: '#F9F9FB', outline: 'none', boxSizing: 'border-box', fontFamily: "'Inter', sans-serif" };
-const LABEL_STYLE = { fontSize: 12, fontWeight: '700', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, display: 'block' };
-const SECTION_TITLE = { fontSize: 13, fontWeight: '800', color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 };
 
 function Toast({ msg, type }) {
   if (!msg) return null;
@@ -19,34 +15,86 @@ function Toast({ msg, type }) {
 }
 
 // FAQ accordion item
-function FaqItem({ q, a }) {
+function FaqItem({ q, a, icon }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderBottom: '1px solid #F2F2F7' }}>
+    <div style={{ background: '#fff', borderRadius: 20, marginBottom: 12, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,0.04)' }}>
       <button
         onClick={() => setOpen(o => !o)}
-        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+        style={{ width: '100%', display: 'flex', alignItems: 'center', padding: '18px 18px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 14 }}
       >
-        <span style={{ fontSize: 14, fontWeight: '700', color: '#1C1C1E', flex: 1, paddingRight: 10 }}>{q}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms', flexShrink: 0 }}>
+        {icon && (
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: icon.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            {icon.el}
+          </div>
+        )}
+        <span style={{ fontSize: 15, fontWeight: '700', color: '#1C1C1E', flex: 1, textAlign: 'left' }}>{q}</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 200ms', flexShrink: 0 }}>
           <path d="M6 9L12 15L18 9" stroke="#8E8E93" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
       {open && (
-        <p style={{ fontSize: 13, color: '#8E8E93', lineHeight: 1.6, margin: '0 18px 16px', padding: '0 0 2px' }}>{a}</p>
+        <p style={{ fontSize: 14, color: '#8E8E93', lineHeight: 1.6, margin: '0 18px 18px', paddingTop: 0 }}>{a}</p>
       )}
     </div>
   );
 }
 
 const faqs = [
-  { q: 'How do I add an expense to a group?', a: 'Open the group → tap the + FAB button at the bottom → fill in the expense details and split method. The expense will be split among group members immediately.' },
-  { q: 'How does settling up work?', a: 'On the group dashboard, tap "Settle Up" next to a member\'s name. You\'ll be redirected to a settlement screen. After completing the payment externally, mark it as settled in the app.' },
-  { q: 'Can I invite someone who isn\'t on Capaz?', a: 'Yes! Go to a group → Group Settings → Share Invite Link. They\'ll get a link to join the group and can register when they first open it.' },
-  { q: 'How is the balance calculated?', a: 'Capaz uses an optimized debt simplification algorithm. It minimises the number of transactions needed to settle all debts in a group, so you pay or receive fewer but fairer amounts.' },
-  { q: 'What happens if I leave a group?', a: 'You can only leave a group after all your balances are settled. If you are owed money or owe money, you\'ll need to settle first.' },
-  { q: 'Is my data safe?', a: 'Yes. Passwords are hashed with bcrypt. All API calls use JWT authentication. Your data is stored securely on MongoDB Atlas.' },
+  {
+    q: 'How do I split a bill?',
+    a: 'Open a group → tap the + FAB button → fill in the expense details and choose a split method. The expense will be distributed among group members instantly.',
+    icon: {
+      bg: 'rgba(99,71,245,0.08)',
+      el: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#6347F5" strokeWidth="2" />
+          <path d="M12 6v6l4 2" stroke="#6347F5" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+  },
+  {
+    q: 'When do I get paid out?',
+    a: 'Once a friend marks a settlement as paid in the app, the balance updates immediately. Actual money transfer happens externally via UPI, bank transfer, or cash — Splitly tracks who owes what.',
+    icon: {
+      bg: 'rgba(99,71,245,0.12)',
+      el: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#6347F5" strokeWidth="2" />
+          <path d="M3 10h18" stroke="#6347F5" strokeWidth="2" />
+          <circle cx="8" cy="15" r="1.5" fill="#6347F5" />
+        </svg>
+      ),
+    },
+  },
+  {
+    q: 'How does Karma work?',
+    a: 'Karma is your reputation score. You earn points for settling debts on time, inviting friends, and being active in groups. Higher karma unlocks achievement badges and bragging rights!',
+    icon: {
+      bg: 'rgba(255,149,0,0.1)',
+      el: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="#FF9500" strokeWidth="2" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" stroke="#FF9500" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="12" cy="17" r="0.5" fill="#FF9500" stroke="#FF9500" strokeWidth="1.5" />
+        </svg>
+      ),
+    },
+  },
 ];
+
+const INPUT_STYLE = {
+  width: '100%', padding: '14px 16px', fontSize: 15,
+  background: '#F9F9FB', border: '1.5px solid #E5E5EA',
+  borderRadius: 14, color: '#1C1C1E', outline: 'none',
+  boxSizing: 'border-box', fontFamily: 'inherit',
+};
+const LABEL_STYLE = {
+  fontSize: 11, fontWeight: '700', color: '#8E8E93',
+  textTransform: 'uppercase', letterSpacing: '0.8px',
+  display: 'block', marginBottom: 8,
+};
 
 export default function HelpSupport() {
   const navigate = useNavigate();
@@ -66,7 +114,7 @@ export default function HelpSupport() {
     try {
       await api.post('/user/support', { subject: subject.trim(), message: message.trim() });
       setSubject(''); setMessage('');
-      showToast('Message sent! We\'ll get back to you soon. ✅');
+      showToast("Message sent! We'll get back to you soon. ✅");
     } catch {
       showToast('Failed to send. Please try again.', 'error');
     } finally {
@@ -83,48 +131,78 @@ export default function HelpSupport() {
       />
       {toast && <Toast msg={toast.msg} type={toast.type} />}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
-        <button onClick={() => navigate(-1)} style={{ width: 38, height: 38, borderRadius: '50%', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', flexShrink: 0 }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', paddingTop: 'calc(16px + env(safe-area-inset-top))' }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{ width: 38, height: 38, borderRadius: '50%', background: '#fff', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', flexShrink: 0 }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="#1C1C1E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </button>
-        <h1 style={{ fontSize: 20, fontWeight: '800', color: '#1C1C1E', margin: 0 }}>Help & Support</h1>
+        <h1 style={{ flex: 1, textAlign: 'center', fontSize: 22, fontWeight: '800', color: '#1C1C1E', margin: 0, marginRight: 38 }}>Help &amp; Support</h1>
       </div>
 
-      <div style={{ padding: '8px 20px 100px' }}>
+      <div style={{ padding: '8px 20px 60px' }}>
 
-        {/* FAQ */}
-        <p style={SECTION_TITLE}>Frequently Asked Questions</p>
-        <div style={CARD_STYLE}>
-          {faqs.map((f, i) => <FaqItem key={i} q={f.q} a={f.a} />)}
-        </div>
+        {/* FAQ section */}
+        <h2 style={{ fontSize: 22, fontWeight: '800', color: '#1C1C1E', margin: '0 0 16px' }}>Common Questions</h2>
+        {faqs.map((f, i) => <FaqItem key={i} q={f.q} a={f.a} icon={f.icon} />)}
 
-        {/* Contact form */}
-        <p style={{ ...SECTION_TITLE, marginTop: 8 }}>Contact Support</p>
-        <div style={{ ...CARD_STYLE, padding: '18px 18px' }}>
+        {/* Contact Us section */}
+        <h2 style={{ fontSize: 22, fontWeight: '800', color: '#1C1C1E', margin: '28px 0 16px' }}>Contact Us</h2>
+        <div style={{ background: '#fff', borderRadius: 24, padding: '24px 20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
           <div style={{ marginBottom: 16 }}>
             <label style={LABEL_STYLE}>Subject</label>
-            <input value={subject} onChange={e => setSubject(e.target.value)} style={INPUT_STYLE} placeholder="What's the issue about?" />
+            <input
+              value={subject}
+              onChange={e => setSubject(e.target.value)}
+              style={INPUT_STYLE}
+              placeholder="e.g. Payment Issue"
+            />
           </div>
-          <div style={{ marginBottom: 18 }}>
+          <div style={{ marginBottom: 24 }}>
             <label style={LABEL_STYLE}>Message</label>
             <textarea
-              value={message} onChange={e => setMessage(e.target.value)} rows={5}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+              rows={5}
               style={{ ...INPUT_STYLE, resize: 'vertical', lineHeight: 1.6 }}
               placeholder="Describe your issue in detail..."
             />
           </div>
-          <button onClick={handleSubmit} disabled={sending} style={{ width: '100%', padding: 14, background: sending ? '#C7C7CC' : 'linear-gradient(135deg, #6347F5, #4B32CC)', color: '#fff', border: 'none', borderRadius: 14, fontSize: 15, fontWeight: '800', cursor: sending ? 'not-allowed' : 'pointer' }}>
-            {sending ? 'Sending...' : 'Send Message'}
+          <button
+            onClick={handleSubmit}
+            disabled={sending}
+            style={{
+              width: '100%', padding: '17px 24px',
+              background: sending ? '#AEAEB2' : 'linear-gradient(135deg, #7B5CF5, #5B3FD4)',
+              color: '#fff', border: 'none', borderRadius: 100,
+              fontSize: 17, fontWeight: '700', cursor: sending ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+            }}
+          >
+            {sending ? 'Sending...' : (
+              <>
+                Send Message
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </>
+            )}
           </button>
         </div>
 
-        {/* App info */}
-        <div style={{ textAlign: 'center', marginTop: 20 }}>
-          <p style={{ fontSize: 13, color: '#C7C7CC', marginBottom: 8 }}>Capaz v1.0.0</p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 24 }}>
-            <span onClick={() => navigate('/terms')} style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Terms of Service</span>
-            <span onClick={() => navigate('/privacy')} style={{ fontSize: 13, color: '#6347F5', fontWeight: '600', cursor: 'pointer' }}>Privacy Policy</span>
+        {/* Footer links */}
+        <div style={{ textAlign: 'center', marginTop: 36 }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 0, marginBottom: 8 }}>
+            <span onClick={() => navigate('/privacy')} style={{ fontSize: 13, color: '#8E8E93', cursor: 'pointer' }}>Privacy Policy</span>
+            <span style={{ fontSize: 13, color: '#C7C7CC', margin: '0 12px' }}>|</span>
+            <span onClick={() => navigate('/terms')} style={{ fontSize: 13, color: '#8E8E93', cursor: 'pointer' }}>Terms of Service</span>
           </div>
+          <p style={{ fontSize: 12, color: '#C7C7CC', margin: 0 }}>Version 2.4.1 (Build 890)</p>
         </div>
       </div>
     </div>
