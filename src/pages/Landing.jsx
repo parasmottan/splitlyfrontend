@@ -1,4 +1,5 @@
 import SEO from '../components/SEO';
+import { SplitlySymbol } from '../components/SplitlyLogo';
 
 export default function Landing() {
   // ... existing refs and useEffect
@@ -17,11 +18,8 @@ export default function Landing() {
 
       {/* Top bar */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', zIndex: 10 }}>
-        <div style={{ width: '34px', height: '34px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '3px', padding: '6px', background: 'rgba(255,255,255,0.3)', borderRadius: '10px', backdropFilter: 'blur(10px)' }}>
-          {[...Array(9)].map((_, i) => (
-            <div key={i} style={{ background: 'rgba(99, 71, 245, 0.7)', borderRadius: '50%' }} />
-          ))}
-        </div>
+        {/* Official Splitly symbol mark */}
+        <SplitlySymbol size={34} />
         <div style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(12px)', borderRadius: '100px', fontSize: '13px', fontWeight: '600', color: '#3D3D5C', border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
           v1.0 Beta
         </div>

@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import useAuthStore from './stores/authStore';
+import { SplitlyLogoHorizontal } from './components/SplitlyLogo';
 
 const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));
@@ -55,8 +56,8 @@ export default function App() {
       {/* Desktop warning */}
       <div className="desktop-warning">
         <div className="desktop-warning-icon">📱</div>
-        <h2>Please open Splitly on a mobile device.</h2>
-        <p>This application is designed for mobile screens only.</p>
+        <SplitlyLogoHorizontal height={32} />
+        <p style={{ marginTop: 8 }}>Please open on a mobile device.</p>
       </div>
 
       {/* App container */}
